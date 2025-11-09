@@ -12,7 +12,7 @@ fi
 echo "  Cliente K8s = $KCTL"
 
 ################  Configuración ###############################
-JSON_DIR="/home/upm/shared/sdedge-ns/json"     # carpeta con los .json
+JSON_DIR="../json"     # carpeta con los .json
 NAMESPACE="rdsv"                               # namespace de los Pods
 COMMON_JSONS=(
   from-cpe.json

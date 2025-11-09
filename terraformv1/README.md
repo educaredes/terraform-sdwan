@@ -6,7 +6,7 @@ Este proyecto tiene como objetivo configurar los switches dentro de las KNFs par
 
 La figura a continuación representa la arquitectura del entorno implementado, detallando los componentes clave y sus interacciones dentro de la red. A partir de esta base, se introdujeron modificaciones que permitieron integrar un controlador RYU alojado en una KNF dedicada, así como gestionar la calidad de servicio (QoS) mediante la aplicación qos_simpleswitch_13.py.
 
-<img width="1058" height="461" alt="image" src="https://github.com/user-attachments/assets/f820e6cd-a188-4587-9c76-3857c9dcb958" />
+<img alt="image" src="https://github.com/user-attachments/assets/f820e6cd-a188-4587-9c76-3857c9dcb958" />
 
 
 ## Componentes Principales
@@ -24,7 +24,7 @@ La figura a continuación representa la arquitectura del entorno implementado, d
 
 La siguiente imágen muestra los distintos servicios configurados dentro de cada uno de las Centrales de proximidad mediante terraform (K8s).
 
-<img width="1132" height="686" alt="image" src="https://github.com/user-attachments/assets/cf3e3bd7-7eaf-49eb-a970-295dd15e96b8" />
+<img alt="image" src="https://github.com/user-attachments/assets/cf3e3bd7-7eaf-49eb-a970-295dd15e96b8" />
 
 ---
 
@@ -60,35 +60,16 @@ La siguiente imágen muestra los distintos servicios configurados dentro de cada
 4. **Aplicar la configuración**
 
     ```bash
-    terraform plan
+    terraform apply --var-file=terraform.tfvars.site2
     ```
 
-5. **Aplicar las reglas y qos**
+5. **Aplicar las reglas**
 
     ```bash
-   chmod +x reglas.sh
-   ./reglas.sh
-   chmod +x qos.sh
-   ./qos.sh
+   chmod +x apply_flow.sh
+   ./apply_flow.sh
     ```
 
----
-
-##  Monitoreo y Visualización
-
-Una vez desplegada la infraestructura, puedes acceder a los paneles de monitoreo y métricas a través de los siguientes servicios:
-
-### Grafana
-- **URL:** [http://localhost:3000](http://localhost:3000)
-- **Usuario por defecto:** `admin`
-- **Contraseña por defecto:** `admin`
-- Permite visualizar dashboards con métricas de tráfico, estado de los KNFs, uso de recursos, etc.
-
-### Prometheus
-- **URL:** [http://localhost:9090](http://localhost:9090)
-- Interfaz para:
-  - Consultar métricas en tiempo real
-  - Ver el estado de los targets monitorizados
 
 
 
