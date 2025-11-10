@@ -1,5 +1,7 @@
 #!/bin/bash
 
+snap install terraform --classic
+
 SDWNS=rdsv
 
 echo "alias kubectl='microk8s kubectl'" >> ~/.bashrc
