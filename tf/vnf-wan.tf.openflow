@@ -159,3 +159,13 @@ resource "kubernetes_service" "vnf_wan_pod" {
     selector   = { "k8s-app" = "vnf-wan-${each.key}" }
   }
 }
+
+# Post-deployment script
+resource "null_resource" "post_deploy_script" {
+  depends_on = [
+    local.vnf_wan_instances
+  ]
+  provisioner "local-exec" {
+    command = "bash ryu-flows.sh"
+  }
+}
