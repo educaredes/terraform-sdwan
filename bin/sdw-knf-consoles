@@ -4,7 +4,7 @@
 knfnames=('access' 'cpe' 'wan')
 
 KNFCMD="microk8s kubectl exec -n $SDWNS -it"
-KNFDS="microk8s kubectl get deployments -n $SDWNS"
+KNFPODS="microk8s kubectl get pods -n $SDWNS"
 
 allknfs=${knfnames[*]}
 USAGE="
@@ -23,10 +23,9 @@ Usage:
            <knf-name>: $allknfs
 "
 
-function deployment_id() {
-    suffix='chart'
-    PATTERN="^$2$1-$2$suffix "
-    echo `$KNFDS | grep -o $PATTERN` 
+function pod_id() {
+    PATTERN="vnf-$2-site$1"
+    echo `$KNFPODS | grep -o $PATTERN` 
 }
 
 function knf_console {
@@ -39,16 +38,17 @@ function knf_console {
         echo "--"
         echo "-- Starting console of knf $knfname of NS $nsid"
         # Get Deployment id
-        DID=$(deployment_id $nsid $knfname)
-	    if [ "$DID" ]; then 
-            KID="deploy/$DID"
+        PODID=$(pod_id $nsid $knfname)
+	    if [ "$PODID" ]; then 
             # Set KNF hostname
-            echo "$KNFCMD $KID -- hostname $knfname-$nsid"
-            $KNFCMD $KID -- hostname $knfname-$nsid
+            echo "$KNFCMD $PODID -- hostname $knfname-$nsid"
+            $KNFCMD $PODID -- hostname $knfname-$nsid
 
             # Start console
-            echo "xfce4-terminal --title $knfname-$nsid --hide-menubar -x $KNFCMD $KID \-\- /bin/bash >/dev/null 2>&1 &"
-            xfce4-terminal --title $knfname-$nsid --hide-menubar -x $KNFCMD $KID \-\- /bin/bash >/dev/null 2>&1 &
+            # echo "xfce4-terminal --title $knfname-$nsid --hide-menubar -x $KNFCMD $KID \-\- /bin/bash >/dev/null 2>&1 &"
+            # xfce4-terminal --title $knfname-$nsid --hide-menubar -x $KNFCMD $PODID \-\- /bin/bash >/dev/null 2>&1 &
+            echo "xfce4-terminal --hide-menubar -x $KNFCMD $PODID \-\- /bin/bash >/dev/null 2>&1 &"
+            xfce4-terminal --hide-menubar -x $KNFCMD $PODID \-\- /bin/bash >/dev/null 2>&1 &
 	    else
 	        echo "-- WARNING: knf $knfname-$nsid not started"
 	    fi

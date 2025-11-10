@@ -13,16 +13,16 @@ Servicios SD-WAN en centrales de proximidad
     - [1.2 Preparación del entorno](#12-preparación-del-entorno)
   - [2. Arranque del escenario de red](#2-arranque-del-escenario-de-red)
   - [3. Servicio de red *corpcpe*](#3-servicio-de-red-corpcpe)
-    - [4.1 (P) Imágenes vnf-access y vnf-cpe](#41-p-imágenes-vnf-access-y-vnf-cpe)
-    - [4.2 Instanciación de corpcpe1](#42-instanciación-de-corpcpe1)
-    - [4.3 (P) Análisis de las conexiones a redes externas y configuración](#43-p-análisis-de-las-conexiones-a-redes-externas-y-configuración)
-  - [5. Servicio de red *sdedge*](#5-servicio-de-red-sdedge)
-    - [5.1 Instanciación de sdedge1](#51-instanciación-de-sdedge1)
-    - [5.2 Análisis de las conexiones de sdedge1 a las redes externas](#52-análisis-de-las-conexiones-de-sdedge1-a-las-redes-externas)
-    - [5.3 Instanciación de sdedge2](#53-instanciación-de-sdedge2)
-  - [6. (P) Configuración y aplicación de políticas de la SD-WAN](#6-p-configuración-y-aplicación-de-políticas-de-la-sd-wan)
-  - [7. Finalización](#7-finalización)
-  - [8. Conclusiones](#8-conclusiones)
+    - [3.1 Imágenes vnf-access y vnf-cpe](#31-imágenes-vnf-access-y-vnf-cpe)
+    - [3.2 Instanciación de corpcpe1](#32-instanciación-de-corpcpe1)
+    - [3.3 Análisis de las conexiones a redes externas y configuración](#33-análisis-de-las-conexiones-a-redes-externas-y-configuración)
+  - [4. Servicio de red *sdedge*](#4-servicio-de-red-sdedge)
+    - [4.1 Instanciación de sdedge1](#41-instanciación-de-sdedge1)
+    - [4.2 Análisis de las conexiones de sdedge1 a las redes externas](#42-análisis-de-las-conexiones-de-sdedge1-a-las-redes-externas)
+    - [4.3 Instanciación de sdedge2](#43-instanciación-de-sdedge2)
+  - [5. Configuración y aplicación de políticas de la SD-WAN](#5-configuración-y-aplicación-de-políticas-de-la-sd-wan)
+  - [6. Finalización](#6-finalización)
+  - [7. Conclusiones](#7-conclusiones)
 - [Anexo I - Comandos](#anexo-i---comandos)
 - [Anexo II - Figuras](#anexo-ii---figuras)
 
@@ -305,7 +305,7 @@ hacia su destino en la red corporativa, pasando por VNF:cpe y VNF:access. Será
 necesario configurar en el servicio el prefijo de red utilizado por la sede
 remota para que VNF:cpe realice correctamente el encaminamiento.
 
-### 4.1 (P) Imágenes vnf-access y vnf-cpe
+### 3.1 Imágenes vnf-access y vnf-cpe
 Las imágenes Docker que se usan por cada una de las KNFs ya se encuentran en
 Docker Hub, en concreto en el repositorio
 https://hub.docker.com/search?q=educaredes. Se van a analizar los ficheros
@@ -324,20 +324,29 @@ _img/vnf-access_ y _img/vnf-cpe_. Observe que cada una de ellas contiene:
 creación de vnf-access y de vnf-cpe (líneas FROM), y qué paquetes adicionales se
 están instalando en cada caso. 
 
-### 4.2 Instanciación de corpcpe1
-Cree una instancia del servicio que dará acceso a Internet a la sede 1.
+### 3.2 Instanciación de corpcpe1
+Se va a utilizar terraform para desplegar los servicios. Acceda a la carpeta
+ `tf`, en la que se encuentran los ficheros de configuración de Terraform, e 
+ inicialice Terraform en esa carpeta:
+
+```shell
+cd ~/shared/terraform-sdwan/tf
+terraform init
+```
+
+Cree una instancia de un servicio que dará acceso a Internet a la sede 1.
 Para ello, utilice:
 
 ```shell
-cd ~/shared/sdedge-ns
-./cpe1.sh
+cd ~/shared/terraform-sdwan/tf
+terraform apply --var-file=dev1.tfvars
 ```
 
 Una vez arrancada la instancia del servicio puede acceder a los terminales de
 las KNFs usando el comando:
 
 ```shell
-cd ~/shared/sdedge-ns
+cd ~/shared/terraform-sdwan
 bin/sdw-knf-consoles open 1
 ```
 
@@ -345,17 +354,14 @@ A continuación, realice pruebas de conectividad básicas con ping y traceroute
 entre las dos KNFs para comprobar que hay conectividad, a través de las
 direcciones de la interfaz `eth0`.
 
-### 4.3 (P) Análisis de las conexiones a redes externas y configuración
-
+### 3.3 Análisis de las conexiones a redes externas y configuración
 A continuación se van a analizar las configuraciones iniciales del servicio
-instanciado. Aunque está previsto que este tipo de configuraciones se realicen
-directamente a través de la plataforma de orquestación, en este caso, se han
-realizado accediendo a los contenedores mediante _kubectl_. El fichero
-_cpe1.sh_, junto con los ficheros *k8s_corpcpe_start.sh* y *start_corpcpe.sh*,
-contienen los comandos necesarios para realizar las configuraciones necesarias
-del servicio. 
+instanciado. Está previsto que este tipo de configuraciones se realicen
+directamente a través de una plataforma de orquestación. En este caso, se han
+realizado mediante Terraform, como una secuencia de comandos que deben
+ejecutarse al arrancar cada contenedor. Los ficheros _vnf-access.tf_ y
+_vnf-cpe.tf_ incluyen las configuraciones necesarias del servicio. 
 
-Acceda al contenido del fichero:
 
 ```shell
 cat cpe1.sh
@@ -364,10 +370,11 @@ cat cpe1.sh
 Acceda también al contenido de los ficheros *k8s_corpcpe_start.sh* y
 *start_corpcpe.sh* que se invocan desde _cpe1.sh_.
 
-:point_right: A partir del contenido del script _cpe1.sh_ y los demás scripts
-que se llaman desde este, analice y describa resumidamente los pasos que se
-están siguiendo para realizar la conexión a las redes externas y la
-configuración del servicio.
+
+:point_right: Acceda mediante VS Code a la secuencia de comandos de los ficheros
+_vnf-access.tf_ y _vnf-cpe.tf_ (puede buscar la cadena `command = [`). Analice y
+describa resumidamente los pasos que se están siguiendo para realizar la
+conexión a las redes externas y la configuración del servicio.
 
 Compruebe el funcionamiento del servicio, siguiendo los siguientes pasos para
 probar la interconectividad entre h1 y s1:
@@ -401,12 +408,7 @@ traceroute -In 8.8.8.8
 :point_right: Explique los resultados de los distintos traceroute, indicando si
 se corresponden con lo esperado.
 
-A continuación desinstale las KNFs mediante el comando:
-```shell
-uninstall.sh
-```
-
-## 5. Servicio de red *sdedge*
+## 4. Servicio de red *sdedge*
 El servicio de red anterior se va a extender a continuación con una nueva KNF
 con el objetivo de crear un servicio _sdedge_, que está preparado para incluir
 la funcionalidad SD-WAN. La Figura 6 muestra los componentes adicionales de ese
@@ -416,14 +418,22 @@ servicio.
 
 *Figura 6. Servicio de red sdedge* 
 
-### 5.1 Instanciación de sdedge1
+### 4.1 Instanciación de sdedge1
 
 Cree una instancia del servicio que dará acceso a Internet a la sede 1 y acceso
 a la red MPLS para la comunicación intra-corporativa, permitiendo conectar con
-el equipo _voip-gw_. Para ello, utilice:
+el equipo _voip-gw_. Para ello, copie un nuevo fichero de configuración para 
+Terraform:
 
 ```shell
-./sdedge1.sh 
+cd ~/shared/terraform-sdwan/tf
+cp vnf-wan.tf.classic vnf-wan.tf
+```
+
+Con este nuevo fichero con extensión `tf` podremos actualizar el despliegue con:
+
+```shell
+terraform apply --var-file=dev1.tfvars
 ```
 
 A continuación, acceda a los terminales de las KNFs usando el comando:
@@ -436,47 +446,43 @@ Y realice pruebas de conectividad básicas con ping y traceroute entre las tres
 KNFs para comprobar que hay conectividad, a través de las direcciones de la
 interfaz `eth0`.
 
-### 5.2 Análisis de las conexiones de sdedge1 a las redes externas
+### 4.2 Análisis de las conexiones de sdedge1 a las redes externas
 
-El fichero _sdedge1_, junto con los ficheros *k8s_sdedge_start.sh* y
-*start_sdedge.sh*, contiene los comandos necesarios para realizar las
-configuraciones necesarias del servicio, accediendo a los contenedores mediante
-_kubectl_, como se explicó anteriormente.
+El fichero _vnf-wan.tf.classic_, contiene los comandos necesarios para realizar las
+configuraciones necesarias del nuevo contenedor. 
 
-:point_right: Acceda al contenido de esos tres ficheros. Compare
-*k8s_corpcpe_start.sh* con *k8s_sdedge_start.sh*:
-
-```shell
-diff k8s_corpcpe_start.sh k8s_sdedge_start.sh
-```
-
-Y explique las diferencias observadas. Acceda también al contenido del fichero
-*start_sdedge.sh* que se invoca desde *k8s_sdedge_start.sh*.
-
-:point_right: A partir del contenido de los distintos scripts, analice y
+:point_right: Acceda con VS Code al contenido de _vnf-wan.tf.classic_, Analice y
 describa resumidamente los pasos que se están siguiendo para realizar la
-conexión a las redes externas y la configuración del servicio, comparándolo con
-el servicio _corpcpe_.
-
+conexión a las redes externas y la configuración del contenedor, indicando
+resumidamente cómo se integra con las configuraciones de los otros dos 
+contenedores.
 
 Compruebe el funcionamiento del servicio, verificando que sigue teniendo
 acceso a Internet, y que ahora tiene acceso desde h1 y t1 al equipo voip-gw.
 
-### 5.3 Instanciación de sdedge2
-Se va a crear una nueva instancia del servicio _sdedge_ mediante un nuevo
-fichero `sdedge2.sh`. Esta instancia permitirá dar acceso a la sede 2 tanto a
-Internet como a la red MPLS. Para ello cree una copia del sdedge1.sh:
+A continuación destruya los contenedores del servicio ejecutando:
 
 ```shell
-cp sdedge1.sh sdedge2.sh
+cd ~/shared/terraform-sdwan/tf
+terraform destroy --var-file=dev1.tfvars
+```
+
+### 4.3 Instanciación de sdedge2
+Se va a crear una nuevo despliegue para instanciar dos servicios _sdedge_
+mediante un nuevo fichero de variables  `dev2.tfvars` en el que se añadan los
+datos de configuración necesarios para dar acceso a la sede 2 (site2) tanto a
+Internet como a la red MPLS. Para ello cree una copia del `dev1.tfvars`:
+
+```shell
+cp dev1.tfvars dev2.tfvars
 ```
 
 A partir de la información de las direcciones IP para la Sede remota 2 (vea
-Anexos), realice los cambios necesarios en el script _sdedge2_ para conectar a
-las redes externas y configurar las KNFs del servicio _sdedge2_. 
+Anexos), añada los datos correspondientes para conectar a las
+las redes externas y configurar las KNFs del site2. 
  
-:point_right: Deberá entregar el script _sdedge2_ como parte del resultado de la
-práctica.
+:point_right: Deberá entregar el fichero `dev2.tfvars` como parte del resultado
+de la práctica.
 
 Acceda a los terminales de las VNFs usando el comando:
 
@@ -512,18 +518,22 @@ se configura para conmutar el tráfico entre KNF:access y dicha red.
 :point_right: Como resultado de este apartado, incluya el texto resultado de la
 captura.
 
-Puede dejar corriendo la captura, le servirá para comprobar qué tráfico se
-conmuta a través de MplsWan en el siguiente apartado.
+A continuación destruya los contenedores ejecutando:
 
-## 6. (P) Configuración y aplicación de políticas de la SD-WAN
+```shell
+cd ~/shared/terraform-sdwan/tf
+terraform destroy --var-file=dev2.tfvars
+```
 
-A continuación, sobre los servicios de red _sdedge_ desplegados en cada una de
-las sedes, se configurará el servicio SD-WAN y se aplicarán las políticas de red
-correspondientes al servicio. En este caso de estudio, y tomando como referencia
-la Figura 4, las políticas aplicadas permitirán cursar el tráfico
-entre los hosts h1 y h2 a través del túnel VXLAN inter-sedes sobre Internet,
-mientras que el tráfico entre los "teléfonos IP" t1 y t2 se continuará enviando
-a través de la red MPLS. 
+## 5. Configuración y aplicación de políticas de la SD-WAN
+
+A continuación, se utilizará un nuevo fichero de configuración para la KNF:wan
+que utilizará OpenFlow y el controlador Ryu para configurar un servicio SD-WAN y
+aplicar las políticas de red correspondientes al servicio. En este caso de
+estudio, y tomando como referencia la Figura 4, las políticas aplicadas
+permitirán cursar el tráfico entre los hosts h1 y h2 a través del túnel VXLAN
+inter-sedes sobre Internet, mientras que el tráfico entre los "teléfonos IP" t1
+y t2 se continuará enviando a través de la red MPLS. 
 
 La Figura 7 muestra resaltados los componentes configurados para el servicio
 SD-WAN.
@@ -532,31 +542,26 @@ SD-WAN.
 
 *Figura 7. Servicio de red sdedge configurado para SD-WAN*
 
-Para realizar las configuraciones de SD-WAN sobre el servicio de red _sdedge_ se
-utiliza el script _sdwan1.sh_ junto a los scripts *k8s_sdwan_start.sh* y
-*start_sdwan.sh*. Acceda al contenido de esos ficheros, así como al contenido de
-la carpeta _json_.
+Acceda al contenido del fichero `vnf-wan.tf.openflow` así como al contenido del
+fichero `ryu-flows.sh` y la carpeta `json`. 
 
-:point_right: A partir de la figura, del contenido de los scripts y de los
-ficheros json, analice y describa resumidamente los pasos que se están siguiendo
-para realizar la configuración del servicio y la aplicación de políticas. 
+:point_right: A partir de la figura, del contenido del fichero de configuración
+y de los ficheros json, analice y describa resumidamente los pasos que se están
+siguiendo para realizar la configuración del servicio y la aplicación de
+políticas. 
 
-A continuación aplique los cambios sobre el servicio de la sede central 1:  
-
-```shell
-./sdwan1.sh
-```
-
-Tras realizar los cambios, obtendrá por pantalla el comando necesario para
-ejecutar el navegador Firefox con acceso al controlador SDN que se ejecuta en la
-KNF:wan de la sede central 1, lo que le permitirá ver las reglas aplicadas en el
-conmutador _brwan_.
-
-Aplique también los cambios sobre el servicio de la sede central 2:  
+A continuación, realice el nuevo despliegue: 
 
 ```shell
-./sdwan2.sh
+cd ~/shared/terraform-sdwan/tf
+# Sobreescribir vnf-access.tf con el fichero para openflow
+cp vnf-wan.tf.openflow vnf-wan.tf
+terraform apply --var-file=dev2.tfvars
 ```
+
+El despliegue finalizará con la apertura del navegador Firefox accediendo al
+controlador SDN que se ejecuta en cada uno de las KNF:wan, lo que le permitirá
+ver las reglas aplicadas en el conmutador _brwan_.
 
 A continuación, deberá realizar las siguientes pruebas de interconectividad
 entre las dos sedes:
@@ -584,37 +589,44 @@ seleccione "VXLAN".
 
 *Figura 8. Selección de decodificación de paquetes en Wireshark*
 
-* Desde t1 lance un ping a t2 (dir. IP 10.20.2.200). El tráfico no debe pasar
-  por isp1-isp2, se debe encaminar por MPLS.
+* A continuación, desde la consola de la KNF:wan del servicio sdedge1, lance una
+  captura de tráfico en la interfaz net1, que da salida a la red MplsWan.
+
+```shell
+tcpdump -i net1
+```
+
+
+Desde t1 lance un ping a t2 (dir. IP 10.20.2.200). El tráfico no debe pasar por isp1-isp2, se debe encaminar por MPLS.
 
 A continuación, desde h1 y desde t1 compruebe el camino seguido por el tráfico a
 otros sistemas del escenario y a Internet utilizando traceroute.
 
-
-## 7. Finalización
-Para liberar los despliegues realizados en el clúster, utilice:
+## 6. Finalización
+Para liberar el despliegue realizado en el clúster, utilice:
 
 ```shell
-./uninstall.sh
+cd ~/shared/terraform-sdwan/tf
+terraform destroy --var-file=dev2.tfvars
 ```
 
-## 8. Conclusiones
+## 7. Conclusiones
 :point_right: Incluya en la entrega un apartado de conclusiones con su
 valoración de la práctica, incluyendo los posibles problemas que haya encontrado
 y sus sugerencias. 
 
 # Anexo I - Comandos 
 
-Si $PING contiene el identificador del pod, ejecuta un `<comando>` en un pod:
+Si $POD contiene el identificador del pod, ejecuta un `<comando>` en un pod:
 
 ```
-kubectl  -n $SDWNS exec -it $PING -- <comando>
+kubectl  -n $SDWNS exec -it $POD -- <comando>
 ```
 
 Abre una shell en un pod:
 
 ```
-kubectl  -n $SDWNS exec -it $PING -- /bin/sh
+kubectl  -n $SDWNS exec -it $POD -- /bin/sh
 ```
 
 Arranca consolas de KNFs:
@@ -631,14 +643,14 @@ bin/sdw-knf-consoles open <ns_id>
 
 ---
 
-![Arquitectura del entorno](img/helm-k8s-ref-arch.drawio.png "Arquitectura del
+![Arquitectura del entorno](img/tf-k8s-ref-arch.drawio.png "Arquitectura del
 entorno")
 
 *Figura 2. Arquitectura del entorno*
 
 ---
 
-![Relaciones del entorno](img/helm-docker.drawio.png "Relación entre
+![Relaciones del entorno](img/tf-docker.drawio.png "Relación entre
 plataformas y repositorios")
 
 *Figura 3. Relación entre plataformas y repositorios*

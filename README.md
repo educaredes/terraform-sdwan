@@ -1,8 +1,11 @@
-# SD-WAN sobre Kubernetes – Caso de uso A (Controlador embebido)
+# Despliegue SD-WAN sobre K8S mediante Terraform
 
-Arquitectura SD-WAN de laboratorio con VNFs ejecutándose como *pods* en Kubernetes y orquestadas con Terraform.  
-En este **Caso A**, el controlador SDN **Ryu** está **embebido en `vnf-wan`** y se establecen **túneles VXLAN entre sedes**.  
-El tráfico VoIP se enruta por la red corporativa MPLS simulada, mientras que el tráfico entre PCs cruza Internet con NAT.
+Arquitectura SD-WAN de laboratorio con VNFs ejecutándose como *pods* en
+Kubernetes y orquestadas con Terraform.  
+En este **Caso A**, el controlador SDN **Ryu** está **embebido en `vnf-wan`** y
+se establecen **túneles VXLAN entre sedes**.  
+El tráfico VoIP se enruta por la red corporativa MPLS simulada, mientras que el
+tráfico entre PCs cruza Internet con NAT.
 
 ## 🗺️ Arquitectura
 
@@ -11,7 +14,7 @@ El tráfico VoIP se enruta por la red corporativa MPLS simulada, mientras que el
 - **Backhaul**: túneles **VXLAN** entre sedes; **MPLS/MetroEthernet** para tráfico corporativo.
 - **Internet simulado** mediante `isp1` y `isp2` con **NAT** para alcanzar destinos públicos (p. ej., 8.8.8.8).
 
-> Consulta las figuras 12–13 del documento para el diagrama de alto nivel.
+<img alt="image" src="doc/img/global-arch-tun.png" />
 
 ## 📂 Estructura del repositorio
 
@@ -22,6 +25,8 @@ El tráfico VoIP se enruta por la red corporativa MPLS simulada, mientras que el
 ├── vnf-access.tf       # despliegue de vnf-access
 ├── vnf-cpe.tf          # despliegue de vnf-cpe
 ├── vnf-wan.tf          # despliegue de vnf-wan con controlador ryu
-├── ryu-flows.sh # inyección automática vía REST/
+├── ryu-flows.sh        # inyección automática de reglas vía REST
+```
+
 
 

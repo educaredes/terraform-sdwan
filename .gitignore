@@ -46,6 +46,5 @@ terraform.rc
 
 ryu.log
 sol
-sdedge2.sh
-sdw5-cfi.docx
+vnf-wan.tf
 !dev*.tfvars

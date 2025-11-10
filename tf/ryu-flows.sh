@@ -84,7 +84,7 @@ for EDGE_DIR in "${EDGE_DIRS[@]}"; do
 
   ######## 6) Abrir FlowManager GUI ############
   GUI_URL="http://localhost:${NODEPORT}/home/index.html"
-  echo "🌐 Abriendo FlowManager GUI en ${GUI_URL}"
+  echo "Abriendo FlowManager GUI en ${GUI_URL}"
   firefox "$GUI_URL" &
 done
 
