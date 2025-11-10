@@ -76,7 +76,7 @@ resource "kubernetes_pod" "vnf_cpe" {
           ################################ [4] BRWAN   (cpe ↔ wan)
           # Esperar IP del vnf-wan con backoff exponencial limitado
           SLEEP_TIME=2
-          MAX_SLEEP=64
+          MAX_SLEEP=16
 
           while true; do
             WAN_IP=$(getent hosts vnf-wan-${each.key}-pod | awk '{print $1}')
