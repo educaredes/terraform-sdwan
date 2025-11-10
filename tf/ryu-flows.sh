@@ -89,3 +89,5 @@ for EDGE_DIR in "${EDGE_DIRS[@]}"; do
 done
 
 echo -e "\n  Todas las reglas SDN se han inyectado con éxito"
+
+exit 0
