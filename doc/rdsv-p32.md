@@ -200,7 +200,7 @@ El comando `bin/get-sdwlab-k8s`:
 - instala la ova que contiene la máquina virtual,
 - añade el directorio compartido en la máquina virtual, en `/home/upm/shared`.
 El objetivo es que esa carpeta compartida sea accesible tanto en el PC anfitrión
-como en la máquina virtual _RDSV-K8S-2024-2_. 
+como en la máquina virtual _RDSV-K8S-2024-v2_. 
 
 Arranque la máquina virtual, abra un terminal, y compruebe que puede acceder a 
 la carpeta compartida `~/shared` en la que ha descargado el repositorio de la 
