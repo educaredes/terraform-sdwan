@@ -427,7 +427,7 @@ Terraform:
 
 ```shell
 cd ~/shared/terraform-sdwan/tf
-cp vnf-wan.tf.classic vnf-wan.tf
+cp vnf-wan.tf.classic_sw vnf-wan.tf
 ```
 
 Con este nuevo fichero con extensión `tf` podremos actualizar el despliegue con:
@@ -555,7 +555,7 @@ A continuación, realice el nuevo despliegue:
 ```shell
 cd ~/shared/terraform-sdwan/tf
 # Sobreescribir vnf-access.tf con el fichero para openflow
-cp vnf-wan.tf.openflow vnf-wan.tf
+cp vnf-wan.tf.openflow_sw vnf-wan.tf
 terraform apply --var-file=dev2.tfvars
 ```
 
