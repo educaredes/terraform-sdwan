@@ -17,11 +17,11 @@ El tráfico VoIP se enruta por la red corporativa MPLS simulada, mientras que el
 
 ```
 .
-├── variables.tf
-├── locals.tf
-├── vnf-access.tf
-├── vnf-cpe.tf
-├── vnf-wan.tf          # Ryu embebido 
-├── apply_flow.sh # inyección automática vía REST/
+├── variables.tf        # definición de parámetros de configuración
+├── locals.tf           # valores útiles para el despliegue
+├── vnf-access.tf       # despliegue de vnf-access
+├── vnf-cpe.tf          # despliegue de vnf-cpe
+├── vnf-wan.tf          # despliegue de vnf-wan con controlador ryu
+├── ryu-flows.sh # inyección automática vía REST/
 
 
