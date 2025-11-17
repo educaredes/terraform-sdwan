@@ -472,9 +472,9 @@ Internet como a la red MPLS. Para ello cree una copia del `dev1.tfvars`:
 cp dev1.tfvars dev2.tfvars
 ```
 
-A partir de la información de las direcciones IP para la Sede remota 2 (vea
-Anexos), añada los datos correspondientes para conectar a las
-las redes externas y configurar las KNFs del site2. 
+Modifique el fichero `dev2.tfvars` para añadir, a continuación de la configuración de la sede 1 (site1), los datos de configuración de la sede 2 (site2). Es decir, tras las modificiones, el fichero `dev2.tfvars` resultante deberá contener los datos de las dos sedes (site1 y site2). Esta nueva configuración permitirá conectar las KNF de la sede 2 a las redes externas. Determine qué direcciones IP debe utilizar consultando los diagramas de red que se muestran en la sección Anexos de este enunciado. 
+
+
  
 :point_right: Deberá entregar el fichero `dev2.tfvars` como parte del resultado
 de la práctica.
