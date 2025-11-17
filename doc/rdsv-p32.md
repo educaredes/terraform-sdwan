@@ -219,7 +219,6 @@ repositorio de la práctica:
 ```
 cd ~/shared
 git clone https://github.com/educaredes/terraform-sdwan.git
-cd terraform-sdwan
 ```
 
 ### 1.2 Preparación del entorno
@@ -230,6 +229,8 @@ Ejecute los comandos:
 cd ~/shared/terraform-sdwan/bin
 ./prepare-k8slab   # creates namespace and network resources
 ```
+
+> Si el sistema solicita autenticación, utilice `upm`/`xxxx` como usuario y contraseña.
 
 Cierre la ventana de terminal y vuelva a abrirla o aplique los cambios
 necesarios mediante:
@@ -243,9 +244,9 @@ correctamente con:
 
 ```shell
 echo $SDWNS
-# debe mostrar el valor
-# 'rdsv'
 ```
+
+> Debe mostrar como salida la cadena de texto `rdsv`.
 
 ## 2. Arranque del escenario de red 
 
@@ -278,6 +279,8 @@ Por último, compruebe que hay conectividad en la sede remota 1, haciendo prueba
 en su LAN local 10.20.1.0/24 entre h1, t1 y r1. Compruebe también que hay
 conectividad entre isp1, isp2 y s1 a través del segmento Internet 10.100.3.0/24.
 También puede comprobar desde s1 el acceso a 8.8.8.8.
+
+> Las credenciales de todos los sistemas arrancados mediante vnx son `root`/`xxxx`.
 
 ## 3. Servicio de red *corpcpe*
 
