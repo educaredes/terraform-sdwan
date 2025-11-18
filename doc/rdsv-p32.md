@@ -186,7 +186,7 @@ repositorio de la práctica:
 mkdir -p ~/shared
 cd ~/shared
 git clone https://github.com/educaredes/terraform-sdwan.git
-cd sdedge-ns
+cd terraform-sdwan
 ```
 
 A continuación, ejecute:
