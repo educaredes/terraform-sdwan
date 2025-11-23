@@ -145,7 +145,7 @@ proximidad.
 
 La figura muestra que las centrales de proximidad disponen de una conexión a la
 red MplsWan, emulada mediante Open vSwitch. En la red MplsWan está conectado el
-equipo _voip-gw_, que simula un equipo de la red corporativa accesible
+equipo voip-gw, que simula un equipo de la red corporativa accesible
 directamente a través del servicio MetroEthernet, en la misma subred IP
 corporativa 10.20.0.0/24 en la que se conectan los routers r1 y r2.
 
@@ -251,7 +251,7 @@ echo $SDWNS
 ## 2. Arranque del escenario de red 
 
 A continuación se va a arrancar el escenario de red que comprende las sedes
-remotas, los routers _isp1_ e _isp2_ y los servidores _s1_ y voip-gw_. Primero
+remotas, los routers isp1 e isp2 y los servidores s1 y voip-gw. Primero
 deberá comprobar que se han creado los switches `AccessNet1`, `AccessNet2`,
 `ExtNet1`, `ExtNet2` y `MplsWan` tecleando en un terminal:
 
@@ -417,7 +417,7 @@ servicio.
 
 Cree una instancia del servicio que dará acceso a Internet a la sede 1 y acceso
 a la red MPLS para la comunicación intra-corporativa, permitiendo conectar con
-el equipo _voip-gw_. Para ello, copie un nuevo fichero de configuración para 
+el equipo voip-gw. Para ello, copie un nuevo fichero de configuración para 
 Terraform:
 
 ```shell
