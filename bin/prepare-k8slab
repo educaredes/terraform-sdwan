@@ -2,12 +2,36 @@
 
 snap install terraform --classic
 
+# Delete terraform lock and state files
+TF_DIR="/home/upm/shared/terraform-sdwan/tf"
+
+CLEAN_PATHS=(
+    "$TF_DIR/.terraform"
+    "$TF_DIR/.terraform.lock.hcl"
+    "$TF_DIR/.terraform.tfstate.lock.info"
+    "$TF_DIR/terraform.tfstate"
+    "$TF_DIR/terraform.tfstate.backup"
+)
+
+for path in "${CLEAN_PATHS[@]}"; do
+    if [ -e "$path" ]; then
+        rm -rf "$path"
+    fi
+done
+
 SDWNS=rdsv
 
 echo "alias kubectl='microk8s kubectl'" >> ~/.bashrc
 echo "export SDWNS=$SDWNS" >> ~/.bashrc
 
-microk8s kubectl create namespace $SDWNS 
+microk8s kubectl delete all --all -n default --ignore-not-found >/dev/null 2>&1
+
+if microk8s kubectl get namespace "$SDWNS" >/dev/null 2>&1; then
+    microk8s kubectl delete all --all -n $SDWNS --ignore-not-found >/dev/null 2>&1
+else
+    microk8s kubectl create namespace $SDWNS 
+fi
+
 microk8s kubectl get namespace $SDWNS 
 
 # Enable access to services running on the host machine via fixed IP address
@@ -24,6 +48,7 @@ sudo ovs-vsctl --if-exists del-br AccessNet2
 sudo ovs-vsctl --if-exists  del-br ExtNet1
 sudo ovs-vsctl --if-exists  del-br ExtNet2
 sudo ovs-vsctl --if-exists  del-br MplsWan
+sudo ovs-vsctl --if-exists  del-br Internet
 sudo ovs-vsctl add-br AccessNet1
 sudo ovs-vsctl add-br AccessNet2
 sudo ovs-vsctl add-br ExtNet1
