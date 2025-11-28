@@ -4,7 +4,10 @@ echo 'Deploying containerlab Internet scenario...'
 
 sudo ovs-vsctl --if-exists del-br Internet
 sudo ovs-vsctl add-br Internet
-sudo containerlab deploy --topo sdedge-nfv-internet.yaml
+sudo mkdir -p /tmp/.clab
+sudo curl -L -s https://raw.githubusercontent.com/educaredes/terraform-sdwan/refs/heads/dani-rev/clab/isp1.cfg -o /tmp/.clab/isp1.cfg
+sudo curl -L -s https://raw.githubusercontent.com/educaredes/terraform-sdwan/refs/heads/dani-rev/clab/isp2.cfg -o /tmp/.clab/isp2.cfg
+sudo containerlab deploy --topo https://raw.githubusercontent.com/educaredes/terraform-sdwan/refs/heads/dani-rev/clab/sdedge-nfv-internet.yaml
 
 echo 'Done!'
 
