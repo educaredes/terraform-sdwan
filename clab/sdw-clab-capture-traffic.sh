@@ -5,9 +5,11 @@ docker_iface=$2
 
 # List of container names and interfaces
 container_names=('clab-sdedge-nfv-internet-s1' 'clab-sdedge-nfv-internet-isp1' 'clab-sdedge-nfv-internet-isp2')
-container_ifaces=('e1-1' 'e1-2' 'e1-3' 'mgmt0')
+container_ifaces_isp=('e1-1' 'e1-2' 'e1-3' 'mgmt0')
+container_ifaces_s1=('eth0' 'eth1')
 allcontainers=${container_names[*]}
-allifaces=${container_ifaces[*]}
+allifaces_isp=${container_ifaces_isp[*]}
+allifaces_s1=${container_ifaces_s1[*]}
 
 USAGE="
 Usage:
@@ -15,11 +17,10 @@ Usage:
     to open capture on specific container interface
     Valid values:
       <container_name>: $allcontainers
-      <container_interface>: valid network interface in <container_name> $allifaces
+      <container_interface>: $allifaces_s1 for s1 container, $allifaces_isp for ISP containers
 "
 
 if [ ! "$2" ] ; then
-    echo ""
     echo "$USAGE"
     exit 1
 fi

@@ -43,8 +43,12 @@ function container_console {
     elif [ "$cmd" == 'close' ]; then
         echo "--"
         echo "-- Closing console of container $container_name"
-        container_hostname="$(docker exec $container_name hostname)"
-        while wmctrl -c $container_hostname; do sleep 0.5; done
+        if docker ps -a --format '{{.Names}}' | grep -q "^${container_name}$"; then
+            container_hostname="$(docker exec $container_name hostname)"
+            while wmctrl -c $container_hostname; do sleep 0.5; done
+        else
+            echo "-- WARNING: container '${container_name}' not started"
+        fi
     fi
 }
 

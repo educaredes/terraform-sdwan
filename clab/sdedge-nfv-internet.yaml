@@ -5,7 +5,7 @@ topology:
     linux:
       type: linux-network-multitool
       group: server
-      image: wbitt/network-multitool:latest
+      image: wbitt/network-multitool:extra
     nokia_srlinux:
       type: ixr-d2l
       group: router
