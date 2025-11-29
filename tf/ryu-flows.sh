@@ -5,7 +5,7 @@ set -euo pipefail
 if command -v kubectl >/dev/null 2>&1; then
   KCTL="kubectl"
 elif command -v microk8s >/dev/null 2>&1; then
-  KCTL="microk8s kubectl"
+  KCTL="sudo microk8s kubectl"
 else
   echo "  No se encontró ni kubectl ni microk8s" >&2; exit 1
 fi
