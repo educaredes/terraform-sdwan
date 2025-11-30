@@ -13,7 +13,7 @@ allifaces_s1=${container_ifaces_s1[*]}
 
 USAGE="
 Usage:
-  sdw-clab-capture-traffic <container_name> <interface>
+  ./sdw-clab-capture-traffic.sh <container_name> <interface>
     to open capture on specific container interface
     Valid values:
       <container_name>: $allcontainers
@@ -31,5 +31,3 @@ if docker ps -a --format '{{.Names}}' | grep -q "^${docker_name}$"; then
 else
     echo "-- WARNING: container '${docker_name}' not started"
 fi
-
-

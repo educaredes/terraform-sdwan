@@ -8,12 +8,12 @@ DOCKERCMD="docker exec -it"
 allcontainers=${container_names[*]}
 USAGE="
 Usage:
-  sdw-clab-consoles <cmd>
+  ./sdw-clab-consoles.sh <cmd>
     to open|close all consoles
     Valid values:
       <cmd>: open close
 
-  sdw-clab-consoles <cmd> <container-name>
+  ./sdw-clab-consoles.sh <cmd> <container-name>
        to open the console of a specific container
        Valid values:
            <cmd>: open close

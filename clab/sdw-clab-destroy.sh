@@ -2,6 +2,7 @@
 
 echo 'Destroying containerlab Internet scenario...'
 
+echo 'Closing consoles...'
 ./sdw-clab-consoles.sh close
 sudo containerlab destroy --topo sdedge-nfv-internet.yaml
 sudo rm -Rf /tmp/.clab

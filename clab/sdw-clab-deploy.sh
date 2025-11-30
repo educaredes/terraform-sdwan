@@ -52,6 +52,8 @@ echo 'Done!'
 echo ''
 echo ''
 
+echo 'Opening consoles...'
+
 ./sdw-clab-consoles.sh open
 
 echo 'Done!'
