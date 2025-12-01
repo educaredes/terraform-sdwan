@@ -226,7 +226,7 @@ Se configurará un stack de telemetría similar al utilizado en la sección [*"3
 
 Deberá de modificar la configuración del servicio de red *sdedge* para que los switches brwan de las KNFs  (`access`, `wan` y `cpe`) sean controlados por OpenFlow. Para ello, además tendrá que incluir una nueva KNF `ctrl` que haga de controlador SDN de tipo Ryu. Al igual que en la práctica 3.2, la configuración de las KNFs se hará con Terraform. Para las KNFs `access`, `wan` y `cpe`, se recomienda analizar con detenimiento sus plantillas de configuración de Terraform en el directorio `tf` del repositorio para determinar la configuración realizada antes de modificar su configuración. Para la KNF `ctrl`, parta de la plantilla de Terraform utilizada en alguna de las otras KNFs y realice la configuración necesaria para arrancar el controlador Ryu que controle los conmutadores brwan de las otras tres KNFs. La arquitectura del nuevo servicio *sdedge* está representada en la Figura 3.
 
-Con esta infraestructura del servicio de red *sdedge*, tendrá que configurar la gestión de la calidad de servicio en la red de acceso mediante la API REST de Ryu. 
+Con esta infraestructura del servicio de red *sdedge*, tendrá que configurar la gestión de la calidad de servicio mediante la API REST de Ryu. 
 
 ![Servicio sdedge](img/sdwan-final.png "servicio sdedge")
 *Figura 3. Servicio sdedge del trabajo final de RDSV/SDNV*
