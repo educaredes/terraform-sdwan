@@ -231,7 +231,7 @@ Con esta infraestructura del servicio de red *sdedge*, tendrá que configurar la
 
 ## 5.1 Modificación de imágenes de contenedores Docker
 
-Modifique el fichero Dockerfile de la imagen Docker de la KNF `ctrl` para que incluya los paquetes o ficheros de configuración que vaya a necesitar. En concreto, deberá incluir el fichero `qos_simple_switch_13.py` que se utiliza en la [práctica 1.2](https://github.com/educaredes/vnx-qos-ryu/blob/main/doc/es/rdsv-lab-qos.md) de QoS con Ryu. Si lo requiere, tal como se ha comentado en la [sección 2.2](#22-repositorio-docker), puede crear nuevas versiones de imágenes Docker para el resto de KNFs para que por defecto incluyan nuevo software o configuración.
+Modifique el fichero Dockerfile de la imagen Docker de la KNF `ctrl` para que incluya los paquetes o ficheros de configuración que vaya a necesitar. En concreto, deberá incluir el fichero `qos_simple_switch_13.py` que se utiliza en la [práctica 1.2](https://github.com/educaredes/vnx-qos-ryu/blob/main/doc/es/rdsv-lab-qos.md) de QoS con Ryu. Si lo requiere, tal como se ha comentado en la [sección 2.2](#22-repositorio-público-de-imágenes-docker), puede crear nuevas versiones de imágenes Docker para el resto de KNFs para que por defecto incluyan nuevo software o configuración.
 
 ## 5.2 Modificación de la imagen de los contenedores de los escenarios VNX
 
