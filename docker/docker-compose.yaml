@@ -9,7 +9,7 @@ services:
     image: ghcr.io/openconfig/gnmic:latest
     container_name: gnmic
     volumes:
-      - ./gnmic-subscription-kafka-prometheus.yaml:/app/gnmic.yaml
+      - ./gnmic-subscription.yaml:/app/gnmic.yaml
     command: "subscribe --config /app/gnmic.yaml"
     depends_on:
       - kafka

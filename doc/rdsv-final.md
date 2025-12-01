@@ -11,14 +11,14 @@ RDSV/SDNV Recomendaciones sobre el trabajo final
   - [1.2. Arranque del escenario de red](#12-arranque-del-escenario-de-red)
 - [2. Creación de repositorios propios](#2-creación-de-repositorios-propios)
   - [2.1 Carpetas](#21-carpetas)
-  - [2.2 Repositorio Docker](#22-repositorio-docker)
+  - [2.2 Repositorio público de imágenes Docker](#22-repositorio-público-de-imágenes-docker)
 - [3. Configuración de stack de telemetría](#3-configuración-de-stack-de-telemetría)
 - [4. Configuración de nuevo servicio de red *sdedge* con Terraform](#4-configuración-de-nuevo-servicio-de-red-sdedge-con-terraform)
 - [5. Modificación de imágenes de contenedores](#5-modificación-de-imágenes-de-contenedores)
-  - [5.1 Modificación imágenes Docker](#51-modificación-imágenes-docker)
+  - [5.1 Modificación de imágenes de contenedores Docker](#51-modificación-de-imágenes-de-contenedores-docker)
   - [5.2 Modificación de la imagen de los contenedores de los escenarios VNX](#52-modificación-de-la-imagen-de-los-contenedores-de-los-escenarios-vnx)
 - [6. Partes opcionales](#6-partes-opcionales)
-  - [6.1 Repositorio Docker privado](#61-repositorio-docker-privado)
+  - [6.1 Repositorio privado de imágenes Docker](#61-repositorio-privado-de-imágenes-docker)
   - [6.2 Otras recomendaciones](#62-otras-recomendaciones)
 
 # 1. Preparación de la máquina virtual y arranque de escenario de red
@@ -182,45 +182,39 @@ Usage:
 
 ## 2.1 Carpetas
 
-Se recomienda trabajar en la carpeta compartida `shared`. Deberá crear dentro de ella una carpeta `rdsv-final` o `sdnv-final`, y en ella clonar el repositorio actual GitHub, tal y como se ha detallado en la sección anterior.
+Se recomienda trabajar en la carpeta compartida `shared`. Deberá crear dentro de ella una carpeta `rdsv-final` o `sdnv-final` y en ella clonar el repositorio actual de GitHub, tal y como se ha detallado en la sección anterior.
 
-## 2.2 Repositorio Docker
+## 2.2 Repositorio público de imágenes Docker
 
-Cree una cuenta gratuita en Docker Hub https://hub.docker.com para subir sus
-contenedores Docker. A continuación, acceda a las carpeta con las definiciones 
-de las imagen docker y haga login para poder subir las imágenes al repositorio:
+Será necesario crear al menos una nueva imagen Docker para la KNF `ctrl`. Para ello, puede crear una cuenta gratuita en [Docker Hub](https://hub.docker.com) donde subir su versión de la imagen Docker. A continuación, acceda al directorio `img` con las definiciones de las imágenes Docker para las KNFs y cree una nueva carpeta `vnf-ctrl`.
 
-```
-cd img
-docker login -u <cuenta>  # pedirá password la primera vez
-```
+En esa nueva carpeta, deberá definir el fichero Dockerfile para la creación de la nueva imagen Docker. En la propia carpeta `vnf-ctrl`, añada un fichero README.txt que incluya los nombres de los integrantes del grupo y, mediante el uso de una sentencia COPY en el Dockerfile, configure la copia de ese fichero README.txt en la propia imagen a crear. 
 
-Después, añada un fichero README.txt que incluya los nombres de los integrantes
-del grupo en cada contenedor, mediante una sentencia COPY en el Dockerfile de cada
-imagen.
+Una vez hecho esto, puede crear ya la imagen Docker configurada en `img/vnf-ctrl`:
 
-Una vez hecho esto, puede crear cada uno de los contenedores. Por ejemplo, para el caso de `vnf-access`:
-
-```
-cd vnf-access
-docker build -t <cuenta>/vnf-access .
+```shell
+cd vnf-ctrl
+docker build -t <cuenta>/vnf-ctrl .
 ```
 
-Y subirlo a Docker Hub
+Y subirla a Docker Hub mediante el siguiente comando:
 
+```shell
+docker push <cuenta>/vnf-ctrl
 ```
-docker push <cuenta>/vnf-access
-cd ..
-```
+
+Si desea modificar la imagen Docker de otra de las KNFs para que incluya nuevo software o configuración por defecto puede seguir el mismo proceso anterior, actualizando la definición del Dockerfile en la carpeta adecuada del directorio `img` y generando una nueva versión de la imagen Docker que pueda subir luego a Docker Hub.
+
+Opcionalmente al repositorio público de Docker Hub, puede utilizar un repostorio privado de imágenes Docker tal como se indica en la [sección 6.1](#61-repositorio-privado-de-imágenes-docker).
 
 # 3. Configuración de stack de telemetría
 
-Se configurará un stack de telemetría similar al utilizado en la sección [*"3. Model-Driven Telemetry con gNMI"*](https://github.com/educaredes/yang-lab/blob/main/docs/enunciado.md#3-model-driven-telemetry-con-gnmi) del enunciado de la práctica 1.4 de la asignatura, donde se deberá monitorizar con el uso del protocolo gNMI los datos de estado operativo y estadísticas de telemetría de todas las interfaces de red de los routers isp1 e isp2, tal y como se refleja en la Figura 2.
+Se configurará un stack de telemetría similar al utilizado en la sección [*"3. Model-Driven Telemetry con gNMI"*](https://github.com/educaredes/yang-lab/blob/main/docs/enunciado.md#3-model-driven-telemetry-con-gnmi) del enunciado de la práctica 1.4 de la asignatura, donde se deberá monitorizar con el uso del protocolo gNMI los datos de estado operativo y estadísticas de telemetría de todas las interfaces de red de los routers isp1 e isp2, tal y como se refleja en la Figura 2. Similar a como se definía en la práctica 1.4, se deberá configurar el cliente gNMIc para que envíe: 1) notificaciones periódicas de estadísticas de las interfaces de red a Prometheus; y 2) notificaciones periódicas de estadísticas de las interfaces de red y notificaciones basadas en cambios para datos de estado operativo y administrativo de las interfaces a un bus de datos basado en Apache Kafka. La configuración de la perioridad de las notificaciones asociadas a subscripciones periódicas se deja a libre criterio.
 
 ![Stack de telemetría](img/telemetry-stack-final.drawio.png "stack de telemetría")
 *Figura 2. Stack de telemetría*
 
-*MORE DETAILS COMING SOON!*
+En la carpeta `docker` dispone del fichero [docker-compose.yaml](../docker/docker-compose.yaml) utilizado en la práctica 1.4 que define y configura los diferentes servicios dependientes para poder desplegar el sistema de telemetría como microservicios basados en contenedores Docker, incluidos el cliente de gNMIc, Prometheus y Apache Kafka. En esa misma carpeta `docker` dispone también de un esqueleto de archivo de configuración [gnmic-subscription.yaml](../docker/gnmic-subscription.yaml) del cliente gNMIc para configurar las operaciones de subscripción necesarias con gNMI (el mismo que el proporcionado en la práctica 1.4). Deberá configurar este archivo de configuración para que permita crear operaciones de subscripción para los dos routers isp1 e isp2. Para ello, la definición de la comunicación con los routers mediante gNMI deberá ser independiente por router. Sin embargo, la definición de las operaciones de subscripción y de las salidas de las notificaciones resultantes para que sean enviadas a Prometheus o Kafka pueden ser globales o independientes por router, a libre criterio.
 
 # 4. Configuración de nuevo servicio de red *sdedge* con Terraform
 
@@ -235,17 +229,16 @@ Con esta infraestructura del servicio de red *sdedge*, tendrá que configurar la
 
 # 5. Modificación de imágenes de contenedores
 
-## 5.1 Modificación imágenes Docker
+## 5.1 Modificación de imágenes de contenedores Docker
 
-Modifique los ficheros Dockerfile de cada una de las imágenes para que incluya otros paquetes de ubuntu que vaya a necesitar en la
-imagen. Deberá también añadir el fichero `qos_simple_switch_13.py` que se utiliza en la [práctica 1.2](https://github.com/educaredes/vnx-qos-ryu/blob/main/doc/es/rdsv-lab-qos.md) de QoS con Ryu.
+Modifique el fichero Dockerfile de la imagen Docker de la KNF `ctrl` para que incluya los paquetes o ficheros de configuración que vaya a necesitar. En concreto, deberá incluir el fichero `qos_simple_switch_13.py` que se utiliza en la [práctica 1.2](https://github.com/educaredes/vnx-qos-ryu/blob/main/doc/es/rdsv-lab-qos.md) de QoS con Ryu. Si lo requiere, tal como se ha comentado en la [sección 2.2](#22-repositorio-docker), puede crear nuevas versiones de imágenes Docker para el resto de KNFs para que por defecto incluyan nuevo software o configuración.
 
 ## 5.2 Modificación de la imagen de los contenedores de los escenarios VNX
 
 Para instalar nuevos paquetes en la imagen `vnx_rootfs_lxc_ubuntu64-20.04-v025-vnxlab` utilizada por los contenedores
 arrancados mediante VNX se debe:
 
-- Parar los escenarios VNX.
+- Parar escenario VNX.
 - Arrancar la imagen en modo directo con:
 
 ```
@@ -254,20 +247,19 @@ vnx --modify-rootfs /usr/share/vnx/filesystems/vnx_rootfs_lxc_ubuntu64-20.04-v02
 
 - Hacer login con root/xxxx e instalar los paquetes deseados.
 - Parar el contenedor con:
-
-```
+```shell
 halt -p
 ```
 
-Arrancar de nuevo los escenarios VNX y comprobar que el software instalado ya 
-está disponible.
+Arrancar de nuevo el escenario VNX y comprobar que el software instalado ya está disponible.
 
-Este método se puede utilizar para instalar, por ejemplo, `iperf3`, que no está
-disponible en la imagen.
+Este método se puede utilizar para instalar, por ejemplo, `iperf3`, que no está disponible en la imagen.
+
+>**Nota 4:** Para probar la instalación de nuevo software en los contenedores que se encuentren ya desplegados por el escenario VNX, siempre puede utilizar el comando `apt-get install` propio de distribuciones de Linux como Ubuntu.
 
 # 6. Partes opcionales
 
-## 6.1 Repositorio Docker privado 
+## 6.1 Repositorio privado de imágenes Docker
 
 Puede encontrar información detallada sobre la configuración de MicroK8s como repositorio privado de imágenes Docker en [este documento](repo-privado-docker.md).
 
@@ -275,4 +267,4 @@ Puede encontrar información detallada sobre la configuración de MicroK8s como 
 
 - En el examen oral se pedirá arrancar el escenario desde cero, por lo que es importante que todos los pasos para cumplir los requisitos mínimos estén automatizados mediante uno o varios scripts. Si hay partes opcionales que se configuran de forma manual, se deberán tener documentados todos los comandos para ejecutarlos rápidamente mediante copia-pega. 
 
-- Se recomienda dejar la parte de configuración de la calidad de servicio y de monitorización de red para el final, una vez que el resto del escenario esté funcionando.
+- Se recomienda dejar la parte de configuración de monitorización de red y de la calidad de servicio para el final, una vez que el resto del escenario esté funcionando.
