@@ -6,7 +6,7 @@
 Reto RDSV/SDNV - Recomendaciones sobre el trabajo final
 =================================================================
 
-> Última actualizaciónes: 02 de diciembre de 2025
+> Última actualización: 02 de diciembre de 2025 (17:36)
 <!-- omit from toc -->
 - [1. Preparación de la máquina virtual y arranque de escenario de red](#1-preparación-de-la-máquina-virtual-y-arranque-de-escenario-de-red)
   - [1.1 Configuración inicial del entorno](#11-configuración-inicial-del-entorno)
@@ -15,7 +15,7 @@ Reto RDSV/SDNV - Recomendaciones sobre el trabajo final
     - [1.1.2 Preparación del entorno de trabajo](#112-preparación-del-entorno-de-trabajo)
   - [1.2. Arranque del escenario de red](#12-arranque-del-escenario-de-red)
 - [2. Creación de repositorios propios](#2-creación-de-repositorios-propios)
-  - [2.1 Carpetas](#21-carpetas)
+  - [2.1 Directorio de trabajo](#21-directorio-de-trabajo)
   - [2.2 Repositorio público de imágenes Docker](#22-repositorio-público-de-imágenes-docker)
 - [3. Configuración de stack de telemetría](#3-configuración-de-stack-de-telemetría)
 - [4. Configuración de nuevo servicio de red *sdedge* con Terraform](#4-configuración-de-nuevo-servicio-de-red-sdedge-con-terraform)
@@ -25,7 +25,7 @@ Reto RDSV/SDNV - Recomendaciones sobre el trabajo final
 - [6. Partes opcionales](#6-partes-opcionales)
   - [6.1 Repositorio privado de imágenes Docker](#61-repositorio-privado-de-imágenes-docker)
   - [6.2 Grafana como servicio de visualización de datos de telemetría](#62-grafana-como-servicio-de-visualización-de-datos-de-telemetría)
-  - [6.3 Switches de sedes remotas controlado por OpenFlow](#63-switches-de-sedes-remotas-controlado-por-openflow)
+  - [6.3 Switches de sedes remotas controlados por OpenFlow](#63-switches-de-sedes-remotas-controlados-por-openflow)
   - [6.4 IPv6 en red de acceso](#64-ipv6-en-red-de-acceso)
   - [6.5 Otras recomendaciones](#65-otras-recomendaciones)
 
@@ -187,7 +187,7 @@ Usage:
 
 # 2. Creación de repositorios propios
 
-## 2.1 Carpetas
+## 2.1 Directorio de trabajo
 
 Se recomienda trabajar en la carpeta compartida `shared`. Deberá crear dentro de ella una carpeta `rdsv-final` o `sdnv-final` y en ella clonar el repositorio actual de GitHub, tal y como se ha detallado en la sección anterior.
 
@@ -281,7 +281,7 @@ Se plantea la posibilidad de configurar Grafana como servicio de visualización 
 - [Prometheus data source](https://grafana.com/docs/grafana/latest/datasources/prometheus/)
 
 
-## 6.3 Switches de sedes remotas controlado por OpenFlow
+## 6.3 Switches de sedes remotas controlados por OpenFlow
 
 Para esta parte opcional se propone sustituir el switch brgX de cada sede remota por un conmutador controlado por OpenFlow desde el controlador Ryu disponible en la KNF `ctrl`. Además, se propone incluir la gestión de la calidad de servicio desde Ryu, controlando cada bcgX, para limitar el ancho de banda de subida desde cada sede remota.
 
