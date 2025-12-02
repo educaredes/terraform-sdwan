@@ -6,7 +6,7 @@
 Reto RDSV/SDNV - Recomendaciones sobre el trabajo final
 =================================================================
 
-> Última actualización: 02 de diciembre de 2025 (17:36)
+> Última actualización: 02 de diciembre de 2025 (17:47)
 <!-- omit from toc -->
 - [1. Preparación de la máquina virtual y arranque de escenario de red](#1-preparación-de-la-máquina-virtual-y-arranque-de-escenario-de-red)
   - [1.1 Configuración inicial del entorno](#11-configuración-inicial-del-entorno)
@@ -49,6 +49,9 @@ Si utiliza un PC personal propio, acceda al apartado
 Si utiliza un PC del laboratorio, siga los siguientes pasos. 
 
 Abra un terminal, muévase al directorio `shared`, cree un una carpeta `rdsv-final` o `sdnv-final` y desgargue allí el repositorio actual de la práctica. Se pone un ejemplo del proceso para el caso de crear una carpeta con nombre `rdsv-final`:
+
+>**Nota 1:** A partir de ahora, en este documento se considerará que se trabaja sobre el directorio de trabajo `~/shared/rdsv-final/terraform-sdwan` de la máquina virtual.
+
 ```shell
 cd ~/shared
 mkdir -p rdsv-final
@@ -67,25 +70,30 @@ El comando `bin/final-get-sdwlab-k8s`:
 - instala la ova que contiene la máquina virtual,
 - añade el directorio compartido en la máquina virtual, en `/home/upm/shared`.
 El objetivo es que esa carpeta compartida sea accesible tanto en el PC anfitrión
-como en la máquina virtual _VNXLAB2025-yang-v1_. 
+como en la máquina virtual [_VNXLAB2025-yang-v1_](VNXLAB2025-yang-v1.ova). 
 
-Arranque la máquina virtual, abra un terminal, y compruebe que puede acceder a  la carpeta compartida `~/shared` en la que ha descargado el repositorio de la  práctica.
+Arranque la máquina virtual, abra un terminal, y compruebe que puede acceder a la carpeta `rdsv-final` o `sdnv-final` dentro de `~/shared` en la que ha descargado el repositorio de la  práctica.
 
 ### 1.1.1.alt Instalación y arranque de la máquina virtual en equipo propio
 
-Si utiliza su propio PC personal, tras descargar e importar la ova, utilice la
+Si utiliza su propio PC personal, tras descargar e importar la ova distribuida para la máquina virtual [_VNXLAB2025-yang-v1_](VNXLAB2025-yang-v1.ova), utilice la
 opción de configuración de _Carpetas Compartidas_ para compartir una carpeta de
 su equipo con la máquina virtual permanentemente, con punto de montaje
-`/home/upm/shared`. Asegúrese además de configurar 8192 MB de memoria y 4 CPUs.
+`/home/upm/shared`. Asegúrese además de configurar al menos 8192 MB de memoria y 4 CPUs.
 
-Arranque la máquina virtual, abra un terminal, y descargue en `~/shared/rdsv-final` o `~/shared/sdnv-final`  el repositorio de la práctica: 
+Arranque la máquina virtual, abra un terminal, muévase al directorio `shared`, cree un una carpeta `rdsv-final` o `sdnv-final` y desgargue allí el repositorio actual de la práctica. Se pone un ejemplo del proceso para el caso de crear una carpeta con nombre `rdsv-final`:
 
 >**Nota 1:** A partir de ahora, en este documento se considerará que se trabaja sobre el directorio de trabajo `~/shared/rdsv-final/terraform-sdwan` de la máquina virtual.
 
 ```shell
-cd ~/shared/rdsv-final
+cd ~/shared
+mkdir -p rdsv-final
+cd rdsv-final
 git clone https://github.com/educaredes/terraform-sdwan.git
+cd terraform-sdwan
 ```
+
+Compruebe que en la carpeta enlazada en su equipo puede ver el nuevo contenido previamente incluido en la carpeta `shared` de la máquina virtual.
 
 ### 1.1.2 Preparación del entorno de trabajo
 
