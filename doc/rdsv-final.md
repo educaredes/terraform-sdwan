@@ -1,7 +1,12 @@
+> **RDSV/SDNV**
+>
+> Curso 2025-26
+> 
 <!-- omit from toc -->
-RDSV/SDNV Recomendaciones sobre el trabajo final
-================================================
+Reto RDSV/SDNV - Recomendaciones sobre el trabajo final
+=================================================================
 
+> Última actualizaciónes: 02 de diciembre de 2025
 <!-- omit from toc -->
 - [1. Preparación de la máquina virtual y arranque de escenario de red](#1-preparación-de-la-máquina-virtual-y-arranque-de-escenario-de-red)
   - [1.1 Configuración inicial del entorno](#11-configuración-inicial-del-entorno)
@@ -19,7 +24,10 @@ RDSV/SDNV Recomendaciones sobre el trabajo final
   - [5.2 Modificación de la imagen de los contenedores de los escenarios VNX](#52-modificación-de-la-imagen-de-los-contenedores-de-los-escenarios-vnx)
 - [6. Partes opcionales](#6-partes-opcionales)
   - [6.1 Repositorio privado de imágenes Docker](#61-repositorio-privado-de-imágenes-docker)
-  - [6.2 Otras recomendaciones](#62-otras-recomendaciones)
+  - [6.2 Grafana como servicio de visualización de datos de telemetría](#62-grafana-como-servicio-de-visualización-de-datos-de-telemetría)
+  - [6.3 Switches de sedes remotas controlado por OpenFlow](#63-switches-de-sedes-remotas-controlado-por-openflow)
+  - [6.4 IPv6 en red de acceso](#64-ipv6-en-red-de-acceso)
+  - [6.5 Otras recomendaciones](#65-otras-recomendaciones)
 
 # 1. Preparación de la máquina virtual y arranque de escenario de red
 
@@ -41,8 +49,7 @@ Si utiliza un PC personal propio, acceda al apartado
 Si utiliza un PC del laboratorio, siga los siguientes pasos. 
 
 Abra un terminal, muévase al directorio `shared`, cree un una carpeta `rdsv-final` o `sdnv-final` y desgargue allí el repositorio actual de la práctica. Se pone un ejemplo del proceso para el caso de crear una carpeta con nombre `rdsv-final`:
-
-```
+```shell
 cd ~/shared
 mkdir -p rdsv-final
 cd rdsv-final
@@ -51,8 +58,7 @@ cd terraform-sdwan
 ```
 
 A continuación, ejecute:
-
-```
+```shell
 chmod +x bin/*
 bin/final-get-sdwlab-k8s
 ```
@@ -76,7 +82,7 @@ Arranque la máquina virtual, abra un terminal, y descargue en `~/shared/rdsv-fi
 
 >**Nota 1:** A partir de ahora, en este documento se considerará que se trabaja sobre el directorio de trabajo `~/shared/rdsv-final/terraform-sdwan` de la máquina virtual.
 
-```
+```shell
 cd ~/shared/rdsv-final
 git clone https://github.com/educaredes/terraform-sdwan.git
 ```
@@ -84,7 +90,6 @@ git clone https://github.com/educaredes/terraform-sdwan.git
 ### 1.1.2 Preparación del entorno de trabajo
 
 Ejecute los comandos:
-
 ```shell
 cd ~/shared/rdsv-final/terraform-sdwan/bin
 ./final-prepare-k8slab   # installs MicroK8s and Terraform, and creates the K8s namespace and network resources
@@ -94,14 +99,12 @@ cd ~/shared/rdsv-final/terraform-sdwan/bin
 
 Cierre la ventana de terminal y vuelva a abrirla o aplique los cambios
 necesarios mediante:
-
 ```shell
 source ~/.bashrc
 ```
 
 Compruebe que el valor de la variable de entorno SDWNS se ha definido
 correctamente con:
-
 ```shell
 echo $SDWNS
 ```
@@ -112,22 +115,20 @@ echo $SDWNS
 
 A continuación se va a arrancar el escenario de red que comprende las sedes remotas, los routers isp1 e isp2 y los servidores s1 y voip-gw. Primero deberá comprobar que se han creado los switches `AccessNet1`, `AccessNet2`,
 `ExtNet1`, `ExtNet2` y `MplsWan` tecleando en un terminal:
-
 ```shell
 sudo ovs-vsctl show
 ```
+
 Para conectar las KNFs con los switches, se ha utilizado
 [Multus](https://github.com/k8snetworkplumbingwg/multus-cni), un plugin de tipo
 _container network interface_ (CNI) para Kubernetes. 
 Compruebe que están creados los correspondientes _Network
 Attachment Definitions_ de _Multus_ ejecutando el comando:
-
 ```shell
 kubectl get -n $SDWNS network-attachment-definitions
 ```
 
 A continuación, arranque parte del escenario mediante VNX:
-
 ```shell
 cd ~/shared/rdsv-final/terraform-sdwan/vnx
 sudo vnx -f sdedge_nfv_sedes.xml -t
@@ -145,19 +146,25 @@ cd ~/shared/rdsv-final/terraform-sdwan/clab
 ./sdw-clab-deploy.sh
 ```
 
-Una vez arrancado el escenario de Containerlab se abrirán las terminales de los contenedores isp1, isp2 y s1. En caso de que se cierren las terminales por error, puede ejecutar los siguientes comandos para volver a abrirlas:
+Una vez arrancado el escenario de Containerlab se abrirán nuevas ventanas con las terminales de los contenedores isp1, isp2 y s1. En caso de que se cierren las terminales por error, puede ejecutar los siguientes comandos para volver a abrirlas:
 ```shell
 cd ~/shared/rdsv-final/terraform-sdwan/clab
 ./sdw-clab-consoles.sh open
 ```
 
+>**Nota 2:** El contenedor asociado a s1 utiliza una imagen Docker [wbitt/network-multitool](https://hub.docker.com/r/wbitt/network-multitool) basada en Alpine Linux con una versión `extra` que posee varias herramientas o utilidades propias de sistemas Linux ya instaladas.
+
+>**Nota 3:** Las ventanas de las terminales que se abren para los contenedores asociados a los routers isp1 e isp2 acceden a la CLI propia del sistema operativo de Nokia SR Linux. Para utilizar la herramienta `ping` en las terminales asociadas a estos contenedores para pruebas de conectividad con otros sistemas finales, utilice el comando `ping <ip_destino> network-instance default`.
+
+>**Nota 4:**  En la sección [*"Entorno de trabajo y requisitos software"*](https://github.com/educaredes/yang-lab/blob/main/docs/enunciado.md#entorno-de-trabajo-y-requisitos-software) del enunciado la práctica 1.4 encontrará otras alternativas para acceder a la gestión de los contenedores desplegados con Containerlab. Recuerde que las credenciales de administración para los routers Nokia SR Linux son `admin`/`NokiaSrl1!`.
+
 El escenario de Containerlab está compuesto ahora por el servidor s1 y por dos routers Nokia SR Linux (isp1 e isp2) con configuración **NAT** para alcanzar destinos públicos (p. ej., 8.8.8.8). 
 
 Sin embargo, los routers isp1 e isp2 carecen de la configuración de direccionamiento IP necesaria para la comunicación con las centrales de proximidad (`ExtNet1` con subred 10.100.1.0/24 en el caso de isp1 y `ExtNet2` con subred 10.100.2.0/24 en el caso de isp2) y para la comunicación con el segmento `Internet` (es decir, subred 10.100.3.0/24) para la comunicación con y desde s1. Estos routers tampoco poseen la configuración de rutas de encaminamiento necesaria para poder establecer la intercomunicación entre las sedes remotas. Esta configuración de red deberá ser realizada a través del protocolo de gestión de red gNMI soportado por los routers Nokia SR Linux, incluyendo la configuración necesaria en el script `clab/sdw-clab-deploy.sh` mediante comandos de consultas de tipo *set* con el cliente gNMIc disponible en la máquina virtual. Para ello, siga las pautas incluidas en la sección [*"2. Utilidades para examinar topología de red y configuración de red basada en modelos con gNMI"*](https://github.com/educaredes/yang-lab-sol/blob/main/docs/enunciado.md#2-utilidades-para-examinar-topolog%C3%ADa-de-red-y-configuraci%C3%B3n-de-red-basada-en-modelos-con-gnmi) del enunciado de la práctica 1.4 de la asignatura.
 
->**Nota 2:** Revise las rutas de encaminamiento que se configuran en los contenedores isp1 e isp2 del escenario VNX utilizado en la práctica 3.2 ([`vnx/sdedge_nfv.xml`](../vnx/sdedge_nfv.xml)) para habilitar intercomunicación entre sedes. Tendrá que realizar esta misma configuración de encaminamiento en los routers desplegados ahora con Containerlab mediante comandos de consultas de tipo *set* con el cliente gNMIc.
+>**Nota 4:** Revise las rutas de encaminamiento que se configuran en los contenedores isp1 e isp2 del escenario VNX utilizado en la práctica 3.2 ([`vnx/sdedge_nfv.xml`](../vnx/sdedge_nfv.xml)) para habilitar intercomunicación entre sedes. Tendrá que realizar esta misma configuración de encaminamiento en los routers desplegados ahora con Containerlab mediante comandos de consultas de tipo *set* con el cliente gNMIc.
 
->**Nota 3:** En la carpeta `clab` se incluyen las plantillas YAML [`configure_ip_address.yaml`](../clab/configure_ip_address.yaml) y [`configure_ip_routing.yaml`](../clab/configure_ip_routing.yaml) necesarias para automatizar el proceso de configuración del direccionamiento IP y del encaminamiento IP en los routers con gNMIc.
+>**Nota 5:** En la carpeta `clab` se incluyen las plantillas YAML [`configure_ip_address.yaml`](../clab/configure_ip_address.yaml) y [`configure_ip_routing.yaml`](../clab/configure_ip_routing.yaml) necesarias para automatizar el proceso de configuración del direccionamiento IP y del encaminamiento IP en los routers con gNMIc.
 
 Una vez completada satisfactoriamente la configuración de los routers isp1 e isp2, compruebe que hay conectividad entre isp1, isp2 y s1 a través del segmento Internet 10.100.3.0/24. Compruebe también que desde s1 tiene acceso a 8.8.8.8.
 
@@ -191,14 +198,12 @@ Será necesario crear al menos una nueva imagen Docker para la KNF `ctrl`. Para 
 En esa nueva carpeta, deberá definir el fichero Dockerfile para la creación de la nueva imagen Docker. En la propia carpeta `vnf-ctrl`, añada un fichero README.txt que incluya los nombres de los integrantes del grupo y, mediante el uso de una sentencia COPY en el Dockerfile, configure la copia de ese fichero README.txt en la propia imagen a crear. 
 
 Una vez hecho esto, puede crear ya la imagen Docker configurada en `img/vnf-ctrl`:
-
 ```shell
 cd vnf-ctrl
 docker build -t <cuenta>/vnf-ctrl .
 ```
 
 Y subirla a Docker Hub mediante el siguiente comando:
-
 ```shell
 docker push <cuenta>/vnf-ctrl
 ```
@@ -215,6 +220,10 @@ Se configurará un stack de telemetría similar al utilizado en la sección [*"3
 *Figura 2. Stack de telemetría del trabajo final de RDSV/SDNV*
 
 En la carpeta `docker` dispone del fichero [docker-compose.yaml](../docker/docker-compose.yaml) utilizado en la práctica 1.4 que define y configura los diferentes servicios dependientes para poder desplegar el sistema de telemetría como microservicios basados en contenedores Docker, incluidos el cliente de gNMIc, Prometheus y Apache Kafka. En esa misma carpeta `docker` dispone también de un esqueleto de archivo de configuración [gnmic-subscription.yaml](../docker/gnmic-subscription.yaml) del cliente gNMIc para configurar las operaciones de subscripción necesarias con gNMI (el mismo que el proporcionado en la práctica 1.4). Deberá configurar este archivo de configuración para que permita crear operaciones de subscripción para los dos routers isp1 e isp2. Para ello, la definición de la comunicación con los routers mediante gNMI deberá ser independiente por router. Sin embargo, la definición de las operaciones de subscripción y de las salidas de las notificaciones resultantes para que sean enviadas a Prometheus o Kafka pueden ser globales o independientes por router, a libre criterio.
+
+En el examen oral se pedirá que, a partir de las estadísticas de tráfico monitorizadas por gNMI y almacenadas en Prometheus, se representen mediante gráficas de Prometheus la evolución temporal de tasa de paquetes o bytes por segundo a la entrada o salida de las interfaces de red de los routers isp1 e isp2. Según la documentación de Prometheus, entre las funciones que dispone su API de consultas dispone de una función [*rate()*](https://prometheus.io/docs/prometheus/latest/querying/functions/#rate) que permite calcular la tasa de incremento promedio por segundo de una métrica proporcionada en Prometheus según la evolución temporal de los datos.
+
+Opcionalmente, se puede configurar y desplegar como un microservicio Docker una plataforma alternativa para la representación de los datos en tiempo real como puede ser Grafana, ideal para visualizar y analizar datos de monitorización a lo largo del tiempo (para más detalles sobre esta parte opcional consulte la [sección 6.2](#62-grafana-como-servicio-de-visualización-de-datos-de-telemetría)). En el examen oral también se podrá pedir el análisis de los datos de monitorización recogidos en Kafka, producto de los dos tipos de subscripciones diferentes configuradas.
 
 # 4. Configuración de nuevo servicio de red *sdedge* con Terraform
 
@@ -235,14 +244,13 @@ Modifique el fichero Dockerfile de la imagen Docker de la KNF `ctrl` para que in
 
 ## 5.2 Modificación de la imagen de los contenedores de los escenarios VNX
 
-Para instalar nuevos paquetes en la imagen `vnx_rootfs_lxc_ubuntu64-20.04-v025-vnxlab` utilizada por los contenedores
+Para instalar nuevos paquetes en la imagen `vnx_rootfs_lxc_ubuntu64-24.04-v025-vnxlab` utilizada por los contenedores
 arrancados mediante VNX se debe:
 
 - Parar escenario VNX.
 - Arrancar la imagen en modo directo con:
-
-```
-vnx --modify-rootfs /usr/share/vnx/filesystems/vnx_rootfs_lxc_ubuntu64-20.04-v025-vnxlab/
+```shell
+vnx --modify-rootfs /usr/share/vnx/filesystems/vnx_rootfs_lxc_ubuntu64-24.04-v025-vnxlab/
 ```
 
 - Hacer login con root/xxxx e instalar los paquetes deseados.
@@ -255,7 +263,7 @@ Arrancar de nuevo el escenario VNX y comprobar que el software instalado ya est�
 
 Este método se puede utilizar para instalar, por ejemplo, `iperf3`, que no está disponible en la imagen.
 
->**Nota 4:** Para probar la instalación de nuevo software en los contenedores que se encuentren ya desplegados por el escenario VNX, siempre puede utilizar el comando `apt-get install` propio de distribuciones de Linux como Ubuntu.
+>**Nota 6:** Para probar la instalación de nuevo software en los contenedores que se encuentren ya desplegados por el escenario VNX, siempre puede utilizar el comando `apt-get install` propio de distribuciones de Linux como Ubuntu para poder descargar e instalar paquetes de software disponible en repositorios de Internet. Es posible que de primeras el contenedor no pueda resolver por DNS la IP de los repositorios de software disponibles en Internet. Como solución a este problema, puede modificar el fichero de configuración `/etc/resolv.conf` del contenedor para que utilice como servidor DNS (*nameserver*) la dirección IP del servidor DNS de Google (es decir, 8.8.8.8).
 
 # 6. Partes opcionales
 
@@ -263,7 +271,25 @@ Este método se puede utilizar para instalar, por ejemplo, `iperf3`, que no est�
 
 Puede encontrar información detallada sobre la configuración de MicroK8s como repositorio privado de imágenes Docker en [este documento](repo-privado-docker.md).
 
-## 6.2 Otras recomendaciones
+## 6.2 Grafana como servicio de visualización de datos de telemetría
+
+Se plantea la posibilidad de configurar Grafana como servicio de visualización de los datos estadísticos de telemetría que se recojan desde Prometheus. Grafana permite representar gráficas más detalladas y dinámicas y, además, se integra fácilmente con Prometheus para representar la evolución de los datos que almacena según series temporales. Para representar los gráficos en Grafana se pueden crear diferentes paneles o *dashboards* dinámicos cuya configuración puede guardarse y reutilizarse para futuros despliegues. Para ello, se recomienda configurar y desplegar Grafana como un microservicio Docker, definiéndolo como un nuevo servicio en el fichero [docker-compose.yaml](../docker/docker-compose.yaml) donde se despliegan el resto de servicios del stack de telemetría utilizado en el trabajo final (es decir, gNMIc, Prometheus y Kafka). A continuación, se proporciona una serie de recursos web oficiales de Prometheus y Grafana, útiles para poder desplegar Grafana y configurarlo para que utilice Prometheus como fuente de datos desde la cuál obtener la información necesaria para representarla en un *dashboard*:
+
+- [Grafana support for Prometheus](https://prometheus.io/docs/visualization/grafana/)
+- [Visualizing metrics using Grafana](https://prometheus.io/docs/tutorials/visualizing_metrics_using_grafana/)
+- [Run Grafana via Docker Compose](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/#run-grafana-via-docker-compose)
+- [Prometheus data source](https://grafana.com/docs/grafana/latest/datasources/prometheus/)
+
+
+## 6.3 Switches de sedes remotas controlado por OpenFlow
+
+Para esta parte opcional se propone sustituir el switch brgX de cada sede remota por un conmutador controlado por OpenFlow desde el controlador Ryu disponible en la KNF `ctrl`. Además, se propone incluir la gestión de la calidad de servicio desde Ryu, controlando cada bcgX, para limitar el ancho de banda de subida desde cada sede remota.
+
+## 6.4 IPv6 en red de acceso
+
+Se plantea la opción de sustituir la red de acceso para cada sede por una red con direccionamiento IPv6.
+
+## 6.5 Otras recomendaciones
 
 - En el examen oral se pedirá arrancar el escenario desde cero, por lo que es importante que todos los pasos para cumplir los requisitos mínimos estén automatizados mediante uno o varios scripts. Si hay partes opcionales que se configuran de forma manual, se deberán tener documentados todos los comandos para ejecutarlos rápidamente mediante copia-pega. 
 
