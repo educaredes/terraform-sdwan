@@ -30,7 +30,7 @@ MicroK8s:
 3. Si queremos hacer uso de este servicio privado de imágenes
 Docker desde una máquina externa diferente al servidor que gestiona Kubernetes, es
 necesario indicar el endpoint asociado como confiable en el fichero
-*/etc/docker/daemon.json* de la máquina externa de la siguiente manera:
+`/etc/docker/daemon.json` de la máquina externa de la siguiente manera:
     ```shell
     {
     "insecure-registries" : ["<IP_MicroK8s_server>:32000"]
