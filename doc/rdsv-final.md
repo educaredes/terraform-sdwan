@@ -6,7 +6,7 @@
 Reto RDSV/SDNV - Recomendaciones sobre el trabajo final
 =================================================================
 
-> Última actualización: 03 de diciembre de 2025 (18:32)
+> Última actualización: 04 de diciembre de 2025 (16:11)
 <!-- omit from toc -->
 - [1. Preparación de la máquina virtual y arranque de escenario de red](#1-preparación-de-la-máquina-virtual-y-arranque-de-escenario-de-red)
   - [1.1 Configuración inicial del entorno](#11-configuración-inicial-del-entorno)
@@ -228,6 +228,7 @@ Se configurará un stack de telemetría similar al utilizado en la sección [*"3
 *Figura 2. Stack de telemetría del trabajo final de RDSV/SDNV*
 
 En la carpeta `docker` dispone del fichero [docker-compose.yaml](../docker/docker-compose.yaml) utilizado en la práctica 1.4 que define y configura los diferentes servicios dependientes para poder desplegar el sistema de telemetría como microservicios basados en contenedores Docker, incluidos el cliente de gNMIc, Prometheus y Apache Kafka. En esa misma carpeta `docker` dispone también de un esqueleto de archivo de configuración [gnmic-subscription.yaml](../docker/gnmic-subscription.yaml) del cliente gNMIc para configurar las operaciones de subscripción necesarias con gNMI (el mismo que el proporcionado en la práctica 1.4). Deberá configurar este archivo de configuración para que permita crear operaciones de subscripción para los dos routers isp1 e isp2. Para ello, la definición de la comunicación con los routers mediante gNMI deberá ser independiente por router. Sin embargo, la definición de las operaciones de subscripción y de las salidas de las notificaciones resultantes para que sean enviadas a Prometheus o Kafka pueden ser globales o independientes por router, a libre criterio.
+>**Nota 8:** Por problemas de permisos con el fichero de configuración del servicio Prometheus (disponible en [`docker/prometheus/prometheus.yaml`](../docker/prometheus/prometheus.yaml)), no se puede desplegar correctamente el sistema de telemetría desde el directorio compartido `~/shared` de la máquina virtual. Como solución, se recomienda mover todo el contenido de la carpeta `docker` fuera de `~/shared` (por ejemplo, a `/home/upm`) y trabajar desde allí. Además, hay que cambiar los permisos del subdirectorio `docker/prometheus` y del fichero `prometheus.yaml` que contiene para que otros usuarios distintos al propietario tenga permisos de lectura y ejecución (valdría con el uso del comando `chmod +rx` para cambiar los permisos de `docker/prometheus` y de `docker/prometheus/prometheus.yaml`).
 
 En el examen oral se pedirá que, a partir de las estadísticas de tráfico monitorizadas por gNMI y almacenadas en Prometheus, se representen mediante gráficas de Prometheus la evolución temporal de tasa de paquetes o bytes por segundo a la entrada o salida de las interfaces de red de los routers isp1 e isp2. Según la documentación de Prometheus, entre las funciones que dispone su API de consultas dispone de una función [*rate()*](https://prometheus.io/docs/prometheus/latest/querying/functions/#rate) que permite calcular la tasa de incremento promedio por segundo de una métrica proporcionada en Prometheus según la evolución temporal de los datos.
 
@@ -271,7 +272,7 @@ Arrancar de nuevo el escenario VNX y comprobar que el software instalado ya est�
 
 Este método se puede utilizar para instalar, por ejemplo, `iperf3`, que no está disponible en la imagen.
 
->**Nota 7:** Para probar la instalación de nuevo software en los contenedores que se encuentren ya desplegados por el escenario VNX, siempre puede utilizar el comando `apt-get install` propio de distribuciones de Linux como Ubuntu para poder descargar e instalar paquetes de software disponible en repositorios de Internet. Es posible que de primeras el contenedor no pueda resolver por DNS la IP de los repositorios de software disponibles en Internet. Como solución a este problema, puede modificar el fichero de configuración `/etc/resolv.conf` del contenedor para que utilice como servidor DNS (*nameserver*) la dirección IP del servidor DNS de Google (es decir, 8.8.8.8).
+>**Nota 8:** Para probar la instalación de nuevo software en los contenedores que se encuentren ya desplegados por el escenario VNX, siempre puede utilizar el comando `apt-get install` propio de distribuciones de Linux como Ubuntu para poder descargar e instalar paquetes de software disponible en repositorios de Internet. Es posible que de primeras el contenedor no pueda resolver por DNS la IP de los repositorios de software disponibles en Internet. Como solución a este problema, puede modificar el fichero de configuración `/etc/resolv.conf` del contenedor para que utilice como servidor DNS (*nameserver*) la dirección IP del servidor DNS de Google (es decir, 8.8.8.8).
 
 # 6. Partes opcionales
 

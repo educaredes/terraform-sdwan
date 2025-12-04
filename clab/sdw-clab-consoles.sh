@@ -11,13 +11,13 @@ Usage:
   ./sdw-clab-consoles.sh <cmd>
     to open|close all consoles
     Valid values:
-      <cmd>: open close
+      <cmd>: open|close
 
   ./sdw-clab-consoles.sh <cmd> <container-name>
-       to open the console of a specific container
-       Valid values:
-           <cmd>: open close
-           <container-name>: $allcontainers
+    to open|close the console of a specific container
+    Valid values:
+        <cmd>: open|close
+        <container-name>: $allcontainers
 "
 
 function container_console {
