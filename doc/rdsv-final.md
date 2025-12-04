@@ -6,7 +6,7 @@
 Reto RDSV/SDNV - Recomendaciones sobre el trabajo final
 =================================================================
 
-> Última actualización: 04 de diciembre de 2025 (16:11)
+> Última actualización: 04 de diciembre de 2025 (16:12)
 <!-- omit from toc -->
 - [1. Preparación de la máquina virtual y arranque de escenario de red](#1-preparación-de-la-máquina-virtual-y-arranque-de-escenario-de-red)
   - [1.1 Configuración inicial del entorno](#11-configuración-inicial-del-entorno)
@@ -272,7 +272,7 @@ Arrancar de nuevo el escenario VNX y comprobar que el software instalado ya est�
 
 Este método se puede utilizar para instalar, por ejemplo, `iperf3`, que no está disponible en la imagen.
 
->**Nota 8:** Para probar la instalación de nuevo software en los contenedores que se encuentren ya desplegados por el escenario VNX, siempre puede utilizar el comando `apt-get install` propio de distribuciones de Linux como Ubuntu para poder descargar e instalar paquetes de software disponible en repositorios de Internet. Es posible que de primeras el contenedor no pueda resolver por DNS la IP de los repositorios de software disponibles en Internet. Como solución a este problema, puede modificar el fichero de configuración `/etc/resolv.conf` del contenedor para que utilice como servidor DNS (*nameserver*) la dirección IP del servidor DNS de Google (es decir, 8.8.8.8).
+>**Nota 7:** Para probar la instalación de nuevo software en los contenedores que se encuentren ya desplegados por el escenario VNX, siempre puede utilizar el comando `apt-get install` propio de distribuciones de Linux como Ubuntu para poder descargar e instalar paquetes de software disponible en repositorios de Internet. Es posible que de primeras el contenedor no pueda resolver por DNS la IP de los repositorios de software disponibles en Internet. Como solución a este problema, puede modificar el fichero de configuración `/etc/resolv.conf` del contenedor para que utilice como servidor DNS (*nameserver*) la dirección IP del servidor DNS de Google (es decir, 8.8.8.8).
 
 # 6. Partes opcionales
 
