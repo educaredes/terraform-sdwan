@@ -145,7 +145,7 @@ proximidad.
 
 La figura muestra que las centrales de proximidad disponen de una conexión a la
 red MplsWan, emulada mediante Open vSwitch. En la red MplsWan está conectado el
-equipo _voip-gw_, que simula un equipo de la red corporativa accesible
+equipo voip-gw, que simula un equipo de la red corporativa accesible
 directamente a través del servicio MetroEthernet, en la misma subred IP
 corporativa 10.20.0.0/24 en la que se conectan los routers r1 y r2.
 
@@ -186,7 +186,7 @@ repositorio de la práctica:
 mkdir -p ~/shared
 cd ~/shared
 git clone https://github.com/educaredes/terraform-sdwan.git
-cd sdedge-ns
+cd terraform-sdwan
 ```
 
 A continuación, ejecute:
@@ -219,7 +219,6 @@ repositorio de la práctica:
 ```
 cd ~/shared
 git clone https://github.com/educaredes/terraform-sdwan.git
-cd terraform-sdwan
 ```
 
 ### 1.2 Preparación del entorno
@@ -230,6 +229,8 @@ Ejecute los comandos:
 cd ~/shared/terraform-sdwan/bin
 ./prepare-k8slab   # creates namespace and network resources
 ```
+
+> Si el sistema solicita autenticación, utilice `upm`/`xxxx` como usuario y contraseña.
 
 Cierre la ventana de terminal y vuelva a abrirla o aplique los cambios
 necesarios mediante:
@@ -243,14 +244,14 @@ correctamente con:
 
 ```shell
 echo $SDWNS
-# debe mostrar el valor
-# 'rdsv'
 ```
+
+> Debe mostrar como salida la cadena de texto `rdsv`.
 
 ## 2. Arranque del escenario de red 
 
 A continuación se va a arrancar el escenario de red que comprende las sedes
-remotas, los routers _isp1_ e _isp2_ y los servidores _s1_ y voip-gw_. Primero
+remotas, los routers isp1 e isp2 y los servidores s1 y voip-gw. Primero
 deberá comprobar que se han creado los switches `AccessNet1`, `AccessNet2`,
 `ExtNet1`, `ExtNet2` y `MplsWan` tecleando en un terminal:
 
@@ -270,7 +271,7 @@ kubectl get -n $SDWNS network-attachment-definitions
 A continuación arranque el escenario con:
 
 ```shell
-cd ~/shared/sdedge-ns/vnx
+cd ~/shared/terraform-sdwan/vnx
 sudo vnx -f sdedge_nfv.xml -t
 ```
 
@@ -278,6 +279,8 @@ Por último, compruebe que hay conectividad en la sede remota 1, haciendo prueba
 en su LAN local 10.20.1.0/24 entre h1, t1 y r1. Compruebe también que hay
 conectividad entre isp1, isp2 y s1 a través del segmento Internet 10.100.3.0/24.
 También puede comprobar desde s1 el acceso a 8.8.8.8.
+
+> Las credenciales de todos los sistemas arrancados mediante vnx son `root`/`xxxx`.
 
 ## 3. Servicio de red *corpcpe*
 
@@ -311,7 +314,7 @@ Docker Hub, en concreto en el repositorio
 https://hub.docker.com/search?q=educaredes. Se van a analizar los ficheros
 utilizados para la creación de esas imágenes: 
 
-Desde el navegador de archivos en _~/shared/sdedge-ns_, acceda a las carpetas
+Desde el navegador de archivos en _~/shared/terraform-sdwan_, acceda a las carpetas
 _img/vnf-access_ y _img/vnf-cpe_. Observe que cada una de ellas contiene:
 
 * un fichero de texto _Dockerfile_ con la configuración necesaria para crear la
@@ -361,14 +364,6 @@ directamente a través de una plataforma de orquestación. En este caso, se han
 realizado mediante Terraform, como una secuencia de comandos que deben
 ejecutarse al arrancar cada contenedor. Los ficheros _vnf-access.tf_ y
 _vnf-cpe.tf_ incluyen las configuraciones necesarias del servicio. 
-
-
-```shell
-cat cpe1.sh
-```
-
-Acceda también al contenido de los ficheros *k8s_corpcpe_start.sh* y
-*start_corpcpe.sh* que se invocan desde _cpe1.sh_.
 
 
 :point_right: Acceda mediante VS Code a la secuencia de comandos de los ficheros
@@ -422,7 +417,7 @@ servicio.
 
 Cree una instancia del servicio que dará acceso a Internet a la sede 1 y acceso
 a la red MPLS para la comunicación intra-corporativa, permitiendo conectar con
-el equipo _voip-gw_. Para ello, copie un nuevo fichero de configuración para 
+el equipo voip-gw. Para ello, copie un nuevo fichero de configuración para 
 Terraform:
 
 ```shell
@@ -477,9 +472,9 @@ Internet como a la red MPLS. Para ello cree una copia del `dev1.tfvars`:
 cp dev1.tfvars dev2.tfvars
 ```
 
-A partir de la información de las direcciones IP para la Sede remota 2 (vea
-Anexos), añada los datos correspondientes para conectar a las
-las redes externas y configurar las KNFs del site2. 
+Modifique el fichero `dev2.tfvars` para añadir, a continuación de la configuración de la sede 1 (site1), los datos de configuración de la sede 2 (site2). Es decir, tras las modificiones, el fichero `dev2.tfvars` resultante deberá contener los datos de las dos sedes (site1 y site2). Esta nueva configuración permitirá conectar las KNF de la sede 2 a las redes externas. Determine qué direcciones IP debe utilizar consultando los diagramas de red que se muestran en la sección Anexos de este enunciado. 
+
+
  
 :point_right: Deberá entregar el fichero `dev2.tfvars` como parte del resultado
 de la práctica.
@@ -542,7 +537,7 @@ SD-WAN.
 
 *Figura 7. Servicio de red sdedge configurado para SD-WAN*
 
-Acceda al contenido del fichero `vnf-wan.tf.openflow` así como al contenido del
+Acceda al contenido del fichero `vnf-wan.tf.openflow_sw` así como al contenido del
 fichero `ryu-flows.sh` y la carpeta `json`. 
 
 :point_right: A partir de la figura, del contenido del fichero de configuración
@@ -620,13 +615,13 @@ y sus sugerencias.
 Si $POD contiene el identificador del pod, ejecuta un `<comando>` en un pod:
 
 ```
-kubectl  -n $SDWNS exec -it $POD -- <comando>
+kubectl -n $SDWNS exec -it $POD -- <comando>
 ```
 
 Abre una shell en un pod:
 
 ```
-kubectl  -n $SDWNS exec -it $POD -- /bin/sh
+kubectl -n $SDWNS exec -it $POD -- /bin/sh
 ```
 
 Arranca consolas de KNFs:
