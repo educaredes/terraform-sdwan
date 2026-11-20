@@ -2,7 +2,7 @@ provider "kubernetes" {
   config_path = "~/.kube/config"
 }
 
-resource "kubernetes_pod" "vnf_access" {
+resource "kubernetes_pod_v1" "vnf_access" {
   for_each = local.vnf_access_instances   
 
   metadata {
@@ -118,7 +118,7 @@ resource "kubernetes_pod" "vnf_access" {
     }
   }
 
-resource "kubernetes_service" "vnf_access" {
+resource "kubernetes_service_v1" "vnf_access" {
   for_each = local.vnf_access_instances
 
   metadata {

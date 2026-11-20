@@ -55,9 +55,9 @@ La siguiente figura representa la arquitectura del entorno implementado, detalla
 
     ```bash
     # pod
-    terraform state show kubernetes_pod.vnf_access[\"site1\"]
+    terraform state show kubernetes_pod_v1.vnf_access[\"site1\"]
     # servicio
-    terraform state show kubernetes_service.vnf_access[\"site1\"]
+    terraform state show kubernetes_service_v1.vnf_access[\"site1\"]
     ```
 
 5. **Aplicar las reglas**
