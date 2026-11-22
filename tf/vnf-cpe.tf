@@ -120,14 +120,14 @@ resource "kubernetes_pod_v1" "vnf_cpe" {
 }
 
 #########################################################################
-#  Servicio headless para descubrir la IP del CPE                       #
+#  Servicio headless para descubrir la IP del pod CPE                       #
 #########################################################################
 
 resource "kubernetes_service_v1" "vnf_cpe" {
   for_each = local.vnf_cpe_instances
 
   metadata {
-    name      = "vnf-cpe-service-${each.key}"
+    name      = "vnf-cpe-${each.key}-pod"
     namespace = "rdsv"
   }
 
