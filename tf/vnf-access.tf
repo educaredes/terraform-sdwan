@@ -126,7 +126,7 @@ resource "kubernetes_service_v1" "vnf_access" {
   for_each = local.vnf_access_instances
 
   metadata {
-    name      = "vnf-access-${each.key}-service"
+    name      = "vnf-access-${each.key}-pod"
     namespace = "rdsv"
   }
 

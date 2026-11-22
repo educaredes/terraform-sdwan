@@ -39,7 +39,7 @@ resource "kubernetes_pod_v1" "vnf_wan" {
 
           # Esperar IP del servicio vnf-access
           while true; do
-            ACCESS_IP=$(getent hosts vnf-access-${each.key}-service | awk '{print $1}')
+            ACCESS_IP=$(getent hosts vnf-access-${each.key}-pod | awk '{print $1}')
             if [ -n "$ACCESS_IP" ]; then break; fi
             echo "...Esperando IP de vnf-access-${each.key}..."
             sleep 2
@@ -122,7 +122,7 @@ resource "kubernetes_service_v1" "vnf_wan" {
   for_each = local.vnf_wan_instances
 
   metadata {
-    name      = "vnf-wan-${each.key}-service"
+    name      = "vnf-wan-${each.key}-pod"
     namespace = "rdsv"
   }
 

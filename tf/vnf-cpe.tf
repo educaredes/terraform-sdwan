@@ -127,7 +127,7 @@ resource "kubernetes_service_v1" "vnf_cpe" {
   for_each = local.vnf_cpe_instances
 
   metadata {
-    name      = "vnf-cpe-${each.key}-service"
+    name      = "vnf-cpe-${each.key}-pod"
     namespace = "rdsv"
   }
 
