@@ -87,7 +87,7 @@ resource "kubernetes_service_v1" "vnf_wan" {
   for_each = local.vnf_wan_instances
 
   metadata {
-    name      = "vnf-wan-${each.key}-pod"
+    name      = "vnf-wan-${each.key}-service"
     namespace = "rdsv"
   }
 

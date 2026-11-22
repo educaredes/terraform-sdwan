@@ -548,7 +548,8 @@ SD-WAN.
 
 *Figura 7. Servicio de red sdedge configurado para SD-WAN*
 
-Acceda al contenido del fichero `vnf-wan.tf.openflow_sw` así como al contenido del
+Acceda al contenido de los ficheros `vnf-wan.tf.openflow_sw`, 
+`post-deployment.tf.openflow_sw` así como al contenido del
 fichero `ryu-flows.sh` y la carpeta `json`. 
 
 :point_right: A partir de la figura, del contenido del fichero de configuración
@@ -562,6 +563,7 @@ A continuación, realice el nuevo despliegue:
 cd ~/shared/terraform-sdwan/tf
 # Sobreescribir vnf-access.tf con el fichero para openflow
 cp vnf-wan.tf.openflow_sw vnf-wan.tf
+cp post-deployment.tf.openflow_sw post-deployment.tf
 terraform apply --var-file=dev2.tfvars
 ```
 

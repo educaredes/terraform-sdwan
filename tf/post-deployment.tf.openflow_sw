@@ -1,0 +1,10 @@
+# Post-deployment script
+resource "null_resource" "post_deploy_script" {
+  depends_on = [
+    kubernetes_service_v1.vnf_wan["site1"],
+    kubernetes_service_v1.vnf_wan["site2"]
+  ]
+  provisioner "local-exec" {
+    command = "bash ryu-flows.sh"
+  }
+}

@@ -71,7 +71,7 @@ resource "kubernetes_pod_v1" "vnf_wan" {
           ##########################
           # Esperar IP del CPE
           while true; do
-            CPE_IP=$(getent hosts ${each.value.cpe_service_name} | awk '{ print $1 }')
+            CPE_IP=$(getent hosts vnf-cpe-${each.key}-pod | awk '{ print $1 }')
             if [ -n "$CPE_IP" ]; then break; fi
             echo "...Esperando IP de vnf-cpe..."
             sleep 2
@@ -116,13 +116,30 @@ resource "kubernetes_pod_v1" "vnf_wan" {
 }
 
 #########################################################################
+#  Servicio headless → expone la IP real del Pod WAN
+#########################################################################
+resource "kubernetes_service_v1" "vnf_wan_pod" {
+  for_each = local.vnf_wan_instances
+
+  metadata {
+    name      = "vnf-wan-${each.key}-pod"
+    namespace = "rdsv"
+  }
+
+  spec {
+    cluster_ip = "None"
+    selector   = { "k8s-app" = "vnf-wan-${each.key}" }
+  }
+}
+
+#########################################################################
 #  Servicio NodePort API_REST
 #########################################################################
 resource "kubernetes_service_v1" "vnf_wan" {
   for_each = local.vnf_wan_instances
 
   metadata {
-    name      = "vnf-wan-${each.key}-pod"
+    name      = "vnf-wan-${each.key}-service"
     namespace = "rdsv"
   }
 
@@ -143,29 +160,3 @@ resource "kubernetes_service_v1" "vnf_wan" {
   }
 }
 
-#########################################################################
-#  Servicio headless → expone la IP real del Pod WAN
-#########################################################################
-resource "kubernetes_service_v1" "vnf_wan_pod" {
-  for_each = local.vnf_wan_instances
-
-  metadata {
-    name      = "vnf-wan-${each.key}-pod"
-    namespace = "rdsv"
-  }
-
-  spec {
-    cluster_ip = "None"
-    selector   = { "k8s-app" = "vnf-wan-${each.key}" }
-  }
-}
-
-# Post-deployment script
-resource "null_resource" "post_deploy_script" {
-  depends_on = [
-    local.vnf_wan_instances
-  ]
-  provisioner "local-exec" {
-    command = "bash ryu-flows.sh"
-  }
-}
