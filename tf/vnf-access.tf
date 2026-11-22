@@ -118,6 +118,10 @@ resource "kubernetes_pod_v1" "vnf_access" {
     }
   }
 
+#########################################################################
+#  Servicio headless para descubrir la IP del pod access                       #
+#########################################################################
+
 resource "kubernetes_service_v1" "vnf_access" {
   for_each = local.vnf_access_instances
 

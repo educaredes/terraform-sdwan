@@ -1,2 +1,2 @@
 #!/bin/bash
-pandoc -f gfm -c github-pandoc.css -t pdf --pdf-engine=/Library/TeX/texbin/pdflatex rdsv-p32.md -o rdsv-p32.pdf
+pandoc -f gfm -c github-pandoc.css --pdf-engine=wkhtmltopdf rdsv-p32.md -o rdsv-p32.pdf
