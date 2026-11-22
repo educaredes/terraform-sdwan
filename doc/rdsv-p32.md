@@ -476,14 +476,21 @@ Internet como a la red MPLS. Para ello cree una copia del `dev1.tfvars`:
 cp dev1.tfvars dev2.tfvars
 ```
 
-Modifique el fichero `dev2.tfvars` para añadir, a continuación de la configuración de la sede 1 (site1), los datos de configuración de la sede 2 (site2). Es decir, tras las modificaciones, el fichero `dev2.tfvars` resultante deberá contener los datos de las dos sedes (site1 y site2). Esta nueva configuración permitirá conectar las KNF de la sede 2 a las redes externas. Determine qué direcciones IP debe utilizar consultando los diagramas de red que se muestran en la sección Anexos de este enunciado. 
-
+Modifique el fichero `dev2.tfvars` para añadir, a continuación de la configuración de la sede 1 (site1), los datos de configuración de la sede 2 (site2). Es decir, tras las modificaciones, el fichero `dev2.tfvars` resultante deberá contener los datos de las dos sedes (site1 y site2). Esta configuración adicional permitirá conectar las KNF de la sede 2 a las redes externas. Determine qué direcciones IP debe utilizar consultando los diagramas de red que se muestran en la sección Anexos de este enunciado. 
 
  
 :point_right: Deberá entregar el fichero `dev2.tfvars` como parte del resultado
 de la práctica.
 
-Acceda a los terminales de las VNFs usando el comando:
+
+Cree a continuación las instancias del servicio para las dos sedes:
+
+```shell
+cd ~/shared/terraform-sdwan/tf
+terraform apply --var-file=dev2.tfvars
+```
+
+Acceda a los terminales de las VNFs de la sede 2 usando el comando:
 
 ```shell
 bin/sdw-knf-consoles open 2
