@@ -476,7 +476,13 @@ Internet como a la red MPLS. Para ello cree una copia del `dev1.tfvars`:
 cp dev1.tfvars dev2.tfvars
 ```
 
-Modifique el fichero `dev2.tfvars` para añadir, a continuación de la configuración de la sede 1 (site1), los datos de configuración de la sede 2 (site2). Es decir, tras las modificaciones, el fichero `dev2.tfvars` resultante deberá contener los datos de las dos sedes (site1 y site2). Esta configuración adicional permitirá conectar las KNF de la sede 2 a las redes externas. Determine qué direcciones IP debe utilizar consultando los diagramas de red que se muestran en la sección Anexos de este enunciado. 
+Modifique el fichero `dev2.tfvars` para añadir, a continuación de la
+configuración de la sede 1 (site1), los datos de configuración de la 
+sede 2 (site2). Es decir, tras las modificaciones, el fichero `dev2.tfvars`
+resultante deberá contener los datos de las dos sedes (site1 y site2). 
+Esta configuración adicional permitirá conectar las KNF de la sede 2 a 
+las redes externas. Determine qué direcciones IP debe utilizar consultando
+los diagramas de red que se muestran en la sección Anexos de este enunciado. 
 
  
 :point_right: Deberá entregar el fichero `dev2.tfvars` como parte del resultado
@@ -548,7 +554,7 @@ SD-WAN.
 
 *Figura 7. Servicio de red sdedge configurado para SD-WAN*
 
-Acceda al contenido de los ficheros `vnf-wan.tf.openflow_sw`, 
+Acceda al contenido de los ficheros `vnf-wan.tf.openflow_sw` y 
 `post-deployment.tf.openflow_sw` así como al contenido del
 fichero `ryu-flows.sh` y la carpeta `json`. 
 
