@@ -1,6 +1,6 @@
 # wan.tf – VNF WAN manifest (sin volumen de flujos JSON)
 
-resource "kubernetes_pod" "vnf_wan" {
+resource "kubernetes_pod_v1" "vnf_wan" {
   for_each = local.vnf_wan_instances
 
   metadata {
@@ -39,7 +39,7 @@ resource "kubernetes_pod" "vnf_wan" {
 
           # Esperar IP del servicio vnf-access
           while true; do
-            ACCESS_IP=$(getent hosts vnf-access-${each.key}-service | awk '{print $1}')
+            ACCESS_IP=$(getent hosts vnf-access-${each.key}-pod | awk '{print $1}')
             if [ -n "$ACCESS_IP" ]; then break; fi
             echo "...Esperando IP de vnf-access-${each.key}..."
             sleep 2
@@ -83,7 +83,7 @@ resource "kubernetes_pod" "vnf_wan" {
 #########################################################################
 #  Servicio NodePort API_REST
 #########################################################################
-resource "kubernetes_service" "vnf_wan" {
+resource "kubernetes_service_v1" "vnf_wan" {
   for_each = local.vnf_wan_instances
 
   metadata {
@@ -111,7 +111,7 @@ resource "kubernetes_service" "vnf_wan" {
 #########################################################################
 #  Servicio headless → expone la IP real del Pod WAN
 #########################################################################
-resource "kubernetes_service" "vnf_wan_pod" {
+resource "kubernetes_service_v1" "vnf_wan_pod" {
   for_each = local.vnf_wan_instances
 
   metadata {

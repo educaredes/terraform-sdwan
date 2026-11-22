@@ -1,4 +1,4 @@
-variable "vnf_sites" {
+variable "sdedge_sites" {
   description = "Mapa de configuración por sitio"
   type = map(object({
     netnum     = number # Número de red del sitio

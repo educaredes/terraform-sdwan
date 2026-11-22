@@ -2,7 +2,7 @@
 #  vnf-CPE (site1 / site2) – versión actualizada                       #
 #########################################################################
 
-resource "kubernetes_pod" "vnf_cpe" {
+resource "kubernetes_pod_v1" "vnf_cpe" {
   for_each = local.vnf_cpe_instances   # site1 y site2
 
   metadata {
@@ -120,14 +120,14 @@ resource "kubernetes_pod" "vnf_cpe" {
 }
 
 #########################################################################
-#  Servicio headless para descubrir la IP del CPE                       #
+#  Servicio headless para descubrir la IP del pod CPE                       #
 #########################################################################
 
-resource "kubernetes_service" "vnf_cpe" {
+resource "kubernetes_service_v1" "vnf_cpe" {
   for_each = local.vnf_cpe_instances
 
   metadata {
-    name      = "vnf-cpe-service-${each.key}"
+    name      = "vnf-cpe-${each.key}-pod"
     namespace = "rdsv"
   }
 

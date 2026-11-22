@@ -30,7 +30,7 @@ command -v curl >/dev/null || { echo "  curl no encontrado"; exit 1; }
 mapfile -t EDGE_DIRS < <(find "$JSON_DIR" -maxdepth 1 -type d -name 'sdedge*' | sort)
 [[ ${#EDGE_DIRS[@]} -gt 0 ]] || { echo "  No se encontraron sdedge*"; exit 1; }
 
-echo "🔎 Sites detectados: ${EDGE_DIRS[*]##*/}"
+echo "Sites detectados: ${EDGE_DIRS[*]##*/}"
 
 ################  Bucle principal por site ####################
 for EDGE_DIR in "${EDGE_DIRS[@]}"; do
@@ -53,7 +53,7 @@ for EDGE_DIR in "${EDGE_DIRS[@]}"; do
   # Construir URL base
   RYU_ROOT="http://localhost:${NODEPORT}/stats"
   FLOW_URL="${RYU_ROOT}/flowentry/add"
-  echo "🎯 Endpoint REST (NodePort) = ${FLOW_URL}"
+  echo "Endpoint REST (NodePort) = ${FLOW_URL}"
 
   ######## 3) Esperar datapath 1 en Ryu ######################
   for i in {1..12}; do
@@ -80,12 +80,12 @@ for EDGE_DIR in "${EDGE_DIRS[@]}"; do
     fi
   done
 
-  echo "  ✅ Reglas cargadas en ${SITE}"
+  echo "Reglas cargadas en ${SITE}"
 
   ######## 6) Abrir FlowManager GUI ############
   GUI_URL="http://localhost:${NODEPORT}/home/index.html"
   echo "Abriendo FlowManager GUI en ${GUI_URL}"
-  firefox "$GUI_URL" &
+  nohup firefox "$GUI_URL" >/dev/null 2>&1 &
 done
 
 echo -e "\n  Todas las reglas SDN se han inyectado con éxito"

@@ -1,4 +1,4 @@
-vnf_sites = {
+sdedge_sites = {
   site1 = {
     netnum     = 1
     custunip   = "10.255.0.2"
