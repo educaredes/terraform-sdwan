@@ -3,10 +3,15 @@
 # List of knfs names
 knfnames=('access' 'cpe' 'wan')
 
-KNFCMD="microk8s kubectl exec -n $SDWNS -it"
-KNFPODS="microk8s kubectl get pods -n $SDWNS"
+#KNFCMD="microk8s kubectl exec -n $SDWNS -it"
+#KNFPODS="microk8s kubectl get pods -n $SDWNS"
 
-allknfs=${knfnames[*]}
+KNFCMD="kubectl exec -n $SDWNS -it"
+KNFPODS="kubectl get pods -n $SDWNS"
+
+
+allknfs=${knfnames[*]}cd ..
+
 USAGE="
 Usage:
   sdw-knf-consoles <cmd> <ns_id>
