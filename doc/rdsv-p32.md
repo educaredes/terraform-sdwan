@@ -570,6 +570,7 @@ cd ~/shared/terraform-sdwan/tf
 # Sobreescribir vnf-access.tf con el fichero para openflow
 cp vnf-wan.tf.openflow_sw vnf-wan.tf
 cp post-deployment.tf.openflow_sw post-deployment.tf
+terraform init # necesario por nuevo tipo de recurso "null" en post-deployment
 terraform apply --var-file=dev2.tfvars
 ```
 
