@@ -48,4 +48,6 @@ terraform.rc
 ryu.log
 sol
 vnf-wan.tf
+post-deployment.tf
 !dev*.tfvars
+dev2.tfvars

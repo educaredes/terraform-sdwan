@@ -1,10 +1,10 @@
 #!/bin/bash
 
-OVAFILE='RDSV-K8S-2024-v2.ova'
+OVAFILE='VNXLAB2026-yang-v1.ova'
 LABDIR=/lab/rdsv/repo
-VMNAME='RDSV-K8S-2024-v2'
+VMNAME=$( echo $OVAFILE | cut -f 1 -d '.')
 STARTCMD="vboxmanage startvm $VMNAME"
-IMPORTOPTS="--vsys 0 --memory 4096 --cpus 2"
+IMPORTOPTS="--vsys 0 --memory 8192 --cpus 4"
 
 START_TIME=$SECONDS
 
